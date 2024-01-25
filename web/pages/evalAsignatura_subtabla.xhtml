@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://java.sun.com/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://java.sun.com/jsf/core"
+                 xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <p:panel id="pnlContent" header="EVALUACION DE ASIGNATURAS - DOCENTES" style="font-size: 11px;background-color: aliceblue;">
+        <h:form id="formEval">
+            <p:dataTable id="dataEnc" var="enc" value="#{asignaturaForm.asigEncuestaModels}"  styleClass="evalFormStyle"
+                         emptyMessage="No existen evaluaciones de Asignaturas abiertas !" 
+                         scrollable="true" scrollHeight="135" >
+                <p:columnGroup type="header">  
+                    <p:row>  
+                        <p:column headerText="Trimestre"  style="text-align: center"  width="5%"/>     
+                        <p:column width="95%"/>
+                    </p:row>  
+                </p:columnGroup>  
+                <p:column >#{enc.trimestre}</p:column>
+                <p:column>
+                    <p:dataTable var="det" value="#{enc.asigEncuestaList}"  
+                         emptyMessage="No existen evaluaciones de Asignaturas abiertas !" styleClass="evalFormStyle"
+                         scrollable="true" scrollHeight="135" >
+                        <p:ajax event="rowSelect" listener="#{asignaturaForm.onRowSelect}" update=":pnlForm" />
+                        <p:ajax event="rowUnselect" listener="#{asignaturaForm.onRowUnselect}" update=":pnlForm" />   
+                        <p:column headerText="Ord."   style="text-align: center"  width="2%" >   
+                            #{enc.asigEncuestaList.indexOf(det)+1}
+                        </p:column>                          
+                        <p:column headerText="Profesor" width="15%">   
+                            #{det.nombres}
+                        </p:column>  
+                        <p:column headerText="Asignatura"  width="35%">     
+                            #{det.nombreMateria}
+                        </p:column>  
+                        <p:column headerText="Fecha Cierre" style="text-align: center" width="10%">      
+                            <h:outputText value="#{det.fechaFin}" style="color:#{det.estado==1 ?'limegreen':det.habilitado=='S'?'blue':'red'}">
+                                <f:convertDateTime locale="es" dateStyle="long"/>
+                            </h:outputText>  
+                        </p:column>                 
+                        <p:column headerText="Estado - Evaluación"  style="text-align: center;font-weight: bold" width="20%">
+                            <h:outputText value="#{det.habilitado=='S' and det.estado==0 ?'Por Realizar':det.habilitado=='S' and det.estado==1?'Realizada':det.habilitado=='N' and det.estado==1?'Período Cerrado - Realizada':'Período Cerrado - No Realizada'}"
+                                          style="color:#{det.estado==1 ?'limegreen':det.habilitado=='S'?'blue':'red'}"/>  
+                        </p:column>                            
+                    </p:dataTable>
+                </p:column>
+            </p:dataTable>
+        </h:form>    
+        <p:panel id="pnlForm" header="Formulario de evaluación" widgetVar="carDialog" rendered="#{asignaturaForm.asigEncuestaDataModel.rowCount ne 0}">
+            <h:form id="formCenter" style="text-align: center" >
+                <p:outputLabel style="color:red;font-size: 10pt;text-decoration: blink;text-transform: capitalize" escape="false"
+                               value="#{asignaturaForm.objSelected==null?'Seleccione una Asignatura....':
+                                        asignaturaForm.objSelected.estado==1?
+                                        'Evaluación de: '.concat('&lt;br/&gt;').concat('&lt;br/&gt;').concat(asignaturaForm.objSelected.nombreMateria).concat('&lt;br/&gt;').concat('&lt;br/&gt;').
+                                        concat(' con el docente ').concat(asignaturaForm.objSelected.nombres).concat('&lt;br/&gt;').concat('&lt;br/&gt;').concat(' ya realizada !'):
+                                        asignaturaForm.objSelected.habilitado=='N'?'Evaluación de: '.concat('&lt;br/&gt;').concat('&lt;br/&gt;').concat(asignaturaForm.objSelected.nombreMateria).concat('&lt;br/&gt;').concat('&lt;br/&gt;').
+                                        concat(' con el docente ').concat(asignaturaForm.objSelected.nombres).concat('&lt;br/&gt;').concat('&lt;br/&gt;').concat(' no realizada - fecha Cerrada'):''}"/>
+                <h:panelGroup id="panelGroupCenter">
+                    <ui:include src="#{navigationMgmtBean.openPage}.xhtml">
+                        <ui:param name="beanForm" value="#{asignaturaForm}"/>
+                    </ui:include>
+                </h:panelGroup>
+            </h:form>        
+        </p:panel>        
+    </p:panel>
+
+
+</ui:composition>
+

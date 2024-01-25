@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://java.sun.com/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://java.sun.com/jsf/core">
+    <p:panel id="pnlContent" header="EVALUACION DE TUTORÍAS ACADÉMICAS/TÉCNICAS"  styleClass="myPanelHoja">
+        <h:form id="formEval">
+            <p:dataTable id="dataEnc" var="enc" value="#{evalTutoriaAcademicaForm.progEncuestaDataModel}" selection="#{evalTutoriaAcademicaForm.objSelected}"
+                         emptyMessage="No existen evaluaciones de Tutorías académicas abiertas !" selectionMode="single" styleClass="evalFormStyle"
+                         scrollable="true" scrollHeight="135">
+                <p:ajax event="rowSelect" listener="#{evalTutoriaAcademicaForm.onRowSelect}" update=":pnlForm "/>
+                <p:ajax event="rowUnselect" listener="#{evalTutoriaAcademicaForm.onRowUnselect}" update=":pnlForm"/> 
+                <p:column headerText="Ord." style="text-align: center"   width="2%">  
+                    #{evalTutoriaAcademicaForm.progEncuestaDataModel.rowIndex+1}
+                </p:column>  
+                <p:column headerText="Nro. Solicitud"  width="5%" >   
+                    #{enc.getEncuTutoDispoPK().getTstCodigo()}
+                </p:column>                    
+                <p:column headerText="Tipo Tutoría"  width="10%" >   
+                    #{enc.tipoTutoria}
+                </p:column>
+                <p:column headerText="Docente/Instancia"  width="35%" >   
+                    #{enc.nombres}
+                </p:column> 
+                <p:column headerText="Formulario de Evaluación"  width="38%" >  
+                    #{enc.titulo}  
+                </p:column>  
+                <p:column headerText="Fecha Cierre" style="text-align: center"  width="10%">  
+                    <h:outputText value="#{enc.fechaFin}" style="color: blue">
+                        <f:convertDateTime locale="es" dateStyle="long"/>
+                    </h:outputText>  
+                </p:column>  
+                <p:column headerText="Estado - Evaluación"  style="text-align: center;font-weight: bold"   width="10%">
+                    <h:outputText value="#{enc.habilitado=='S' and enc.estado==0 ?'Por Realizar':enc.habilitado=='S' and enc.estado==1?'Realizada':enc.habilitado=='N' and enc.estado==1?'Período Cerrado - Realizada':'Período Cerrado - No Realizada'}"
+                                  style="color:#{enc.estado==1 ?'limegreen':enc.habilitado=='S'?'blue':'red'}"/>  
+                </p:column>   
+            </p:dataTable>
+        </h:form>  
+        <p:panel id="pnlForm" header="Formulario de evaluación" widgetVar="carDialog" rendered="#{evalTutoriaAcademicaForm.progEncuestaDataModel.rowCount ne 0}">
+            <h:form id="formCenter" style="text-align: center" >
+                <p:outputLabel style="color:red;font-size: 10pt;text-decoration: blink;text-transform: capitalize" escape="false"
+                               value="#{evalTutoriaAcademicaForm.objSelected==null?'Seleccione una Asignatura....':
+                                        evalTutoriaAcademicaForm.objSelected.estado==1?
+                                        ''.concat(evalTutoriaAcademicaForm.objSelected.titulo).concat('&lt;br/&gt;').concat('&lt;br/&gt;').
+                                        concat(' Tutor: ').concat(evalTutoriaAcademicaForm.objSelected.nombres).concat('&lt;br/&gt;').concat('&lt;br/&gt;').concat(' ya realizada !'):
+                                        evalTutoriaAcademicaForm.objSelected.habilitado=='N'?''.concat('&lt;br/&gt;').concat('&lt;br/&gt;').concat(evalTutoriaAcademicaForm.objSelected.titulo).concat('&lt;br/&gt;').concat('&lt;br/&gt;').
+                                        concat(' Tutor: ').concat(evalTutoriaAcademicaForm.objSelected.nombres).concat('&lt;br/&gt;').concat('&lt;br/&gt;').concat(' No realizada - Evaluación Cerrada'):''}"/>                
+                <h:panelGroup id="panelGroupCenter">
+                    <ui:include src="#{navigationMgmtBean.openPage}.xhtml">
+                        <ui:param name="beanForm" value="#{evalTutoriaAcademicaForm}"/>
+                    </ui:include>
+                </h:panelGroup>
+            </h:form>        
+        </p:panel>
+    </p:panel>
+</ui:composition>
+

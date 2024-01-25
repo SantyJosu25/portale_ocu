@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://java.sun.com/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://java.sun.com/jsf/core">
+    <h:form id="formMenuBar">
+        <p:growl id="messages"/> 
+        <p:toolbar>
+            <p:toolbarGroup >
+                <p:commandButton type="button" value="Nuevo" icon="ui-icon-document" title="Nuevo registro" update="messages"/>  
+                <p:commandButton type="button" value="Eliminar" icon="ui-icon-trash" title="Eliminar registro señalado" update="messages"/>  
+                <p:commandButton type="button" value="Editar" icon="ui-icon-pencil" title="Editar registro señalado" update="messages"/>  
+                <p:commandButton type="button" value="Recargar" icon="ui-icon-refresh" title="regargar pagina" update="messages"/>  
+                <p:commandButton value="Guardar" icon="ui-icon-disk" title="Guardar datos ingresados"
+                                 actionListener="#{backingBean.save()}"  update="messages"/>  
+                <p:separator />  
+                <p:commandButton value="Regresar" icon="ui-icon-home" actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true"
+                                 title="Regresar a pantalla principal" update=":pnlContent" />  
+
+
+            </p:toolbarGroup>
+        </p:toolbar>          
+    </h:form>
+</ui:composition>
+

@@ -1,0 +1,393 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://java.sun.com/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://java.sun.com/jsf/core">
+
+    <p:panel id="pnlContent" header="ENCUESTA SOCIOECONOMICA"  styleClass="myPanelHoja" >
+        <p:scrollPanel mode="native" style="width: 100%;height: 675px">
+            <p:panel  style="width: 100%; height: 100%; border: 0 ">
+                <style>
+                    .ui-spinner-input {
+                        padding-right: 0px;
+                        text-align: left;
+                        vertical-align: middle;
+                        width: 50px;
+
+                    }
+                    .ui-selectonemenu-list-item {
+                        border: 0 none;
+                        cursor: pointer;
+                        margin: 1px 0;
+                        padding: 3px 5px;
+                        text-align: left;
+                        white-space: nowrap;
+                        font-family: Arial; 
+                        font-size: 8pt;                
+                    }  
+                    .ui-selectonelistbox .ui-selectlistbox-item, .ui-selectmanymenu .ui-selectlistbox-item {
+                        border: 0 none;
+                        cursor: pointer;
+                        font-weight: normal;
+                        margin: 2px;
+                        font-family: Arial; 
+                        font-size: 7pt;  
+                    }
+                    .myPanelSocio .ui-panel-titlebar {
+                        text-transform: uppercase;font-size: 9pt;color: brown;
+                    }
+                    .myPanelSocio .ui-panel-content {
+                        background-color: transparent;
+                    }                    
+                    .ui-growl-item {
+                        display: block;
+                        padding: 10px 15px;
+                        font-size: 9pt;
+                        font-family: Arial
+                    }
+                </style>
+                <h:form id="detalle">
+                    <p:growl id="messages"  /> 
+                    <p:panel id="pnlEstEncu"   rendered="#{formulariohv.bestadoencuesta}"  styleClass="myPanelSocio">                       
+                        <p:graphicImage value="./resources/images/listo.png"/>
+                        <h:outputText value="ENCUESTA REALIZADA" style=" color:forestgreen; text-align: center "/>
+                    </p:panel>
+                    <p:panel id="pnlDatFamil" header="DATOS FAMILIARES" rendered="#{!formulariohv.bestadoencuesta}" styleClass="myPanelSocio">
+                        <h:panelGrid columns="3" id="gautetnica">
+                            <h:outputLabel value="Autoidentificación Etnica:"  style=" font-weight: bold"/>                                  
+                            <p:selectOneRadio id="srautetnica" value="#{formulariohv.srautetnica}"
+                                              style=" font-family: Arial; font-size: 8pt"  required="true" requiredMessage="Autoidentificación Étnica: se requiere un valor">  
+                                <f:selectItem itemLabel="Mestizo" itemValue="1" />  
+                                <f:selectItem itemLabel="Montubio" itemValue="2" />                                          
+                                <f:selectItem itemLabel="Afroecuatoriana" itemValue="3" />     
+                                <f:selectItem itemLabel="Indígena" itemValue="4" />     
+                                <f:selectItem itemLabel="Blanco" itemValue="5" />     
+                                <f:selectItem itemLabel="Otro" itemValue="6" />   
+                                <p:ajax  update="gautetnica" listener="#{formulariohv.autetnicavalueChangeListener()}"/>
+                            </p:selectOneRadio>  
+                            <p:message for="srautetnica" display="icon"/>  
+                            <h:outputLabel value="Cuales?:" rendered="#{formulariohv.bautetnica}" id="ototautetnica" style=" font-weight: bold"/>
+                            <h:inputText autocomplete="of" binding="#{formulariohv.itxtautetnica}" style="font-family: Arial; font-size: 8pt; width: 400px" rendered="#{formulariohv.bautetnica}"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="3"  id="gestciv">
+                            <h:outputText  value="Estado Civil:" style=" font-weight: bold"/>
+                            <p:selectOneRadio id="srestciv" value="#{formulariohv.srestadcivil}"
+                                              style=" font-family: Arial; font-size: 8pt" required="true" requiredMessage="Estado Civil: se requiere un valor" >  
+                                <f:selectItem itemLabel="Casado" itemValue="C" />  
+                                <f:selectItem itemLabel="Soltero" itemValue="S" />                                          
+                                <f:selectItem itemLabel="Divorciado" itemValue="D" />     
+                                <f:selectItem itemLabel="Viudo" itemValue="V" />     
+                                <f:selectItem itemLabel="Unión Libre" itemValue="U" />    
+                                <p:ajax  update="gestciv" />
+                            </p:selectOneRadio>  
+                            <p:message for="srestciv" display="icon" />  
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" >
+                            <h:outputText  value="N° Carnet CONADIS:" style=" font-weight: bold"/>
+                            <h:inputText autocomplete="of" binding="#{formulariohv.itxtnumconadis}" style="font-family: Arial; font-size: 8pt; width: 100px" />
+                            <h:outputText  value="Número de hijos:" style=" font-weight: bold"/>
+                            <p:spinner value="#{formulariohv.inumhijos}" min="0" max="10" />
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" id="gingmen" >                                          
+                            <h:outputText  value="Ingreso promedio mensual:" style=" font-weight: bold"/>
+                            <p:selectOneMenu value="#{formulariohv.smingprommen.value}" 
+                                             style="font-family: Arial; font-size: 8pt "   required="true" requiredMessage="Ingreso Mensual: se requiere un valor">
+                                <f:selectItem  itemLabel="Escoja uno.." itemValue="" />
+                                <f:selectItem  itemLabel="menos de $300" itemValue="1.0000" />
+                                <f:selectItem  itemLabel="entre $301 y $600" itemValue="2.0000" />
+                                <f:selectItem  itemLabel="entre $601 y $1000" itemValue="3.0000" />
+                                <f:selectItem  itemLabel="entre $1001 y $2000" itemValue="4.0000" />
+                                <f:selectItem  itemLabel="entre $2001 y $3000" itemValue="5.0000" />
+                                <f:selectItem  itemLabel="mas de $3001" itemValue="6.0000" />
+                                <p:ajax  update="gingmen" immediate="true" />
+                            </p:selectOneMenu>                                  
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" id="gdbiene" >
+                            <h:outputText  value="Bienes familiares:" style=" font-weight: bold"/>
+                            <p:selectManyCheckbox value="#{formulariohv.selectedbienfa}" >  
+                                <f:selectItem itemLabel="Vivienda propia" itemValue="a3_5_1" />  
+                                <f:selectItem itemLabel="Vehículos" itemValue="a3_5_2" />  
+                                <f:selectItem itemLabel="Otros" itemValue="a3_5_3" />      
+                                <p:ajax  update="gdbiene" listener="#{formulariohv.bfotrosvalueChangeListener()}"/>
+                            </p:selectManyCheckbox>                                
+                            <h:outputText  value="Cuáles?:" rendered="#{formulariohv.bbfotrosvisible}" style=" font-weight: bold"/>
+                            <h:inputText binding="#{formulariohv.itxtbfotroscuales}" style="font-family: Arial; font-size: 8pt; width: 400px" rendered="#{formulariohv.bbfotrosvisible}" />
+                        </h:panelGrid>
+                        <h:panelGrid columns="3" id="gdatpercont" >
+                            <h:outputText  value="Persona de Contacto:" style=" font-weight: bold"/>
+                            <h:inputText autocomplete="of" id="ipercontac" binding="#{formulariohv.itxtperscontacto}" style="font-family: Arial; font-size: 8pt; width: 400px"  required="true" requiredMessage="Persona de Contacto: se requiere un valor">
+                                <p:ajax  update="gdatpercont" immediate="true" />
+                            </h:inputText>
+                            <p:message for="ipercontac" display="icon"/>  
+                            <h:outputText  value="Teléfono persona de Contacto:" style=" font-weight: bold"/>
+                            <h:inputText autocomplete="of" id="itelpercontac" binding="#{formulariohv.itxttelperscontacto}" style="font-family: Arial; font-size: 8pt; width: 150px" required="true" requiredMessage="Teléfono de Contacto: se requiere un valor">
+                                <p:ajax  update="gdatpercont" immediate="true" />
+                            </h:inputText>                            
+                            <p:message for="itelpercontac" display="icon"/> 
+
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:panel id="pnlEstUni" header="ESTUDIOS UNIVERSITARIOS" rendered="#{!formulariohv.bestadoencuesta}" styleClass="myPanelSocio">
+                        <h:panelGrid columns="5" id="gcabestuniterniv" >
+                            <h:outputText  value=" " />
+                            <h:outputText  value=" Títulos de tercer nivel / Institución donde lo realizó  " style="font-family: Arial;  font-size: 8pt; width: 300px; font-weight: bold"/>
+                            <h:outputText  value=" Año de inicio " style="font-family: Arial; font-size: 8pt; width: 100px; font-weight: bold"/>
+                            <h:outputText  value=" Año de graduación " style="font-family: Arial; font-size: 8pt; width: 100px;font-weight: bold"/>
+                            <h:outputText  value=" " />
+                        </h:panelGrid>
+                        <h:panelGrid columns="5" id="gestuniternivtit1" >
+                            <h:outputText  value="1. " />
+                            <h:inputText autocomplete="of" binding="#{formulariohv.itxttitterniv1}" style="font-family: Arial; font-size: 8pt; width: 300px" >
+                                <p:ajax update="gestuniternivtit1" immediate="true"/>
+                            </h:inputText>                                       
+                            <p:inputMask   mask="9999" id="ipianiotitini1" value="#{formulariohv.ianiotitini1}" style=" width: 50px; text-align: center" >
+                                <p:ajax update="gestuniternivtit1" immediate="true"/>
+                            </p:inputMask>                                      
+                            <p:inputMask mask="9999"  id="ipaniotitfin1" value="#{formulariohv.ianiotitfin1}" style=" width: 50px; text-align: center" validatorMessage="Año Graduación Titulo1 fuera del Rango">
+                                <f:validateLongRange  minimum="#{formulariohv.ianiotitini1}" disabled="#{formulariohv.itxttitterniv1.value eq '' || formulariohv.itxttitterniv1.value eq null}"/>
+                            </p:inputMask>
+                            <p:message for="ipaniotitfin1" display="icon"/>   
+                        </h:panelGrid>
+                        <h:panelGrid columns="5" id="gestuniternivtit2" >
+                            <h:outputText  value="2. " />
+                            <h:inputText autocomplete="of" id="ititterniv2" binding="#{formulariohv.itxttitterniv2}" style="font-family: Arial; font-size: 8pt; width: 300px" >
+                                <p:ajax update="gestuniternivtit2" immediate="true"/>
+                            </h:inputText>
+                            <p:inputMask mask="9999" value="#{formulariohv.ianiotitini2}" style=" width: 50px; text-align: center">
+                                <p:ajax update="gestuniternivtit2" immediate="true"/>
+                            </p:inputMask>                                    
+                            <p:inputMask mask="9999" id="ipaniotitfin2" value="#{formulariohv.ianiotitfin2}" style=" width: 50px; text-align: center" validatorMessage="Año Graduación Titulo2 fuera del Rango" >
+                                <f:validateLongRange  minimum="#{formulariohv.ianiotitini2}" disabled="#{formulariohv.itxttitterniv2.value eq '' || formulariohv.itxttitterniv2.value eq null}" />                                        
+                            </p:inputMask> 
+                            <p:message for="ipaniotitfin2" display="icon"/> 
+                        </h:panelGrid>
+                        <h:panelGrid columns="5" id="gestuniternivtit3" >
+                            <h:outputText  value="3. " />
+                            <h:inputText autocomplete="of" binding="#{formulariohv.itxttitterniv3}" style="font-family: Arial; font-size: 8pt; width: 300px" >
+                                <p:ajax update="gestuniternivtit3" immediate="true"/>
+                            </h:inputText>
+                            <p:inputMask mask="9999" value="#{formulariohv.ianiotitini3}" style=" width: 50px; text-align: center">
+                                <p:ajax update="gestuniternivtit3" immediate="true"/>
+                            </p:inputMask>
+                            <p:inputMask mask="9999" id="ipaniotitfin3" value="#{formulariohv.ianiotitfin3}" style=" width: 50px; text-align: center" validatorMessage="Año Graduación Titulo2 fuera del Rango">
+                                <f:validateLongRange  minimum="#{formulariohv.ianiotitini3}" disabled="#{formulariohv.itxttitterniv3.value eq '' || formulariohv.itxttitterniv3.value eq null}" />                                        
+                            </p:inputMask>  
+                            <p:message for="ipaniotitfin3" display="icon"/> 
+                        </h:panelGrid>
+                        <h:panelGrid columns="5" id="gcabeestunicuarniv" >
+                            <h:outputText  value=" " />
+                            <h:outputText  value=" Títulos de cuarto nivel / Institución donde lo realizó  " style="font-family: Arial;  font-size: 8pt; width: 300px;font-weight: bold"/>
+                            <h:outputText  value=" Año de inicio " style="font-family: Arial; font-size: 8pt; width: 100px; font-weight: bold"/>
+                            <h:outputText  value=" Año de graduación " style="font-family: Arial; font-size: 8pt; width: 100px; font-weight: bold"/>
+                            <h:outputText  value=" " />
+                        </h:panelGrid>  
+                        <h:panelGrid columns="5" id="gestunicuarnivtit1" >
+                            <h:outputText  value="1. " />
+                            <h:inputText autocomplete="of" binding="#{formulariohv.itxttitcuartniv1}" style="font-family: Arial; font-size: 8pt; width: 300px" >
+                                <p:ajax update="gestunicuarnivtit1" immediate="true"/>
+                            </h:inputText>
+                            <p:inputMask mask="9999" value="#{formulariohv.ianiotitcnini1}" style=" width: 50px; text-align: center">
+                                <p:ajax update="gestunicuarnivtit1" immediate="true"/>
+                            </p:inputMask>
+                            <p:inputMask mask="9999"  id="ipaniotitcnfin1" value="#{formulariohv.ianiotitcnfin1}" style=" width: 50px; text-align: center" validatorMessage="Año Graduación Titulo CuartoNivel1 fuera del Rango">
+                                <f:validateLongRange  minimum="#{formulariohv.ianiotitcnini1}" disabled="#{formulariohv.itxttitcuartniv1.value eq '' || formulariohv.itxttitcuartniv1.value eq null}" />                                        
+                            </p:inputMask>  
+                            <p:message for="ipaniotitcnfin1" display="icon"/> 
+                        </h:panelGrid>
+                        <h:panelGrid columns="5" id="gestunicuarnivtit2" >
+                            <h:outputText  value="2. " />
+                            <h:inputText autocomplete="of" binding="#{formulariohv.itxttitcuartniv2}" style="font-family: Arial; font-size: 8pt; width: 300px" >
+                                <p:ajax update="gestunicuarnivtit2" immediate="true"/>
+                            </h:inputText>
+                            <p:inputMask mask="9999" value="#{formulariohv.ianiotitcnini2}" style=" width: 50px; text-align: center">
+                                <p:ajax update="gestunicuarnivtit2" immediate="true"/>
+                            </p:inputMask>
+                            <p:inputMask mask="9999" id="ipaniotitcnfin2" value="#{formulariohv.ianiotitcnfin2}" style=" width: 50px; text-align: center">
+                                <f:validateLongRange  minimum="#{formulariohv.ianiotitcnini2}" disabled="#{formulariohv.itxttitcuartniv2.value eq '' || formulariohv.itxttitcuartniv2.value eq null}" />                                        
+                            </p:inputMask>  
+                            <p:message for="ipaniotitcnfin2" display="icon"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="5" id="gestunicuarnivtit3" >
+                            <h:outputText  value="3. " />
+                            <h:inputText autocomplete="of" binding="#{formulariohv.itxttitcuartniv3}" style="font-family: Arial; font-size: 8pt; width: 300px" >
+                                <p:ajax update="gestunicuarnivtit3" immediate="true"/>
+                            </h:inputText>
+                            <p:inputMask mask="9999" value="#{formulariohv.ianiotitcnini3}" style=" width: 50px; text-align: center">
+                                <p:ajax update="gestunicuarnivtit3" immediate="true"/>
+                            </p:inputMask>
+                            <p:inputMask mask="9999" id="ipaniotitcnfin3" value="#{formulariohv.ianiotitcnfin3}" style=" width: 50px; text-align: center">
+                                <f:validateLongRange  minimum="#{formulariohv.ianiotitcnini3}" disabled="#{formulariohv.itxttitcuartniv3.value eq '' || formulariohv.itxttitcuartniv3.value eq null}" />                                        
+                            </p:inputMask>
+                            <p:message for="ipaniotitcnfin3" display="icon"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="1" id="gestotcur" >
+                            <h:outputText value=" Indique los cursos o seminarios de actualización realizados en otras instituciones distintas a la UASB en los últimos tres años   (separados por una coma ',')" style="font-family: Arial;  font-size: 8pt; width: 300px; font-weight: bold"/>
+                            <p:inputTextarea rows="3" cols="150" maxlength="500" counter="counter" counterTemplate="{0} Caracteres Restantes"  autoResize="false" binding="#{formulariohv.itxtcurot}"/> 
+                            <h:outputText id="counter"/>
+                        </h:panelGrid>                                
+                    </p:panel>
+                    <p:panel id="pnlInfLab" header="INFORMACIÓN LABORAL" rendered="#{!formulariohv.bestadoencuesta}" styleClass="myPanelSocio" >
+                        <h:panelGrid columns="3" id="ginflab">
+                            <h:outputText  value=" Usted ha tenido experiencia laboral?" style=" font-weight: bold"/>
+                            <p:selectOneRadio id="isexplab"  value="#{formulariohv.sexplab}"
+                                              style=" font-family: Arial; font-size: 8pt" required="true"  requiredMessage="Debe inidcar si tiene o no experiencia laboral">  
+                                <f:selectItem itemLabel="Si" itemValue="0" />  
+                                <f:selectItem itemLabel="No" itemValue="1" />   
+                                <p:ajax  update="gexplab" listener="#{formulariohv.vexplabvalueChangeListener()}" />
+                                <p:ajax  update="ginflab" immediate="true"/>
+                            </p:selectOneRadio> 
+                            <p:message for="isexplab" display="icon"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="1" id="gexplab" >
+                            <h:panelGrid  columns="3" id="ginfbasexplab"  rendered="#{formulariohv.bexplab}">
+                                <h:outputText  value=" ¿Después de cuanto tiempo (años) de haber egresado de la carrera de tercer nivel consiguió un trabajo estable ?" style=" font-family: Arial; font-size: 7pt;font-weight: bold" />   
+                                <p:spinner  id="snumanio" value="#{formulariohv.inumaniocontrab}" min="0" required="true" requiredMessage="Es necesario un Valor en años de conseguir trabajo">
+                                    <p:ajax  update="ginfbasexplab" immediate="true" />
+                                    <f:validateRequired disabled="#{formulariohv.sexplab eq '1'  }"/>
+                                </p:spinner>
+                                <p:message for="snumanio" display="icon"/>
+                                <h:outputText  value=" ¿Actualmente tiene un trabajo remunerado ? "  style=" font-weight: bold"/>   
+                                <p:selectOneRadio  value="#{formulariohv.strabremu}"
+                                                   style=" font-family: Arial; font-size: 8pt"  required="true" requiredMessage="Debe indicar si tiene o no trabajo remunerado"
+                                                   id="istrabremu">  
+                                    <f:selectItem itemLabel="Si" itemValue="S" />  
+                                    <f:selectItem itemLabel="No" itemValue="N" /> 
+                                    <p:ajax  update="ginfbasexplab" immediate="true" />
+                                    <f:validateRequired disabled="#{formulariohv.sexplab eq '1' }"/>
+                                </p:selectOneRadio> 
+                                <p:message for="istrabremu" display="icon"/>
+                                <h:outputText  value="¿Está buscando trabajo ?" style=" font-weight: bold"/> 
+                                <p:selectOneRadio  value="#{formulariohv.sbusqtrab}"
+                                                   style=" font-family: Arial; font-size: 8pt" required="true" requiredMessage="Debe inidcar si esta o no buscando trabajo"
+                                                   id="isbusqtrab">  
+                                    <f:selectItem itemLabel="Si" itemValue="S" />  
+                                    <f:selectItem itemLabel="No" itemValue="N" /> 
+                                    <p:ajax  update="ginfbasexplab" immediate="true" />
+                                    <f:validateRequired disabled="#{formulariohv.sexplab eq '1' }"/>
+                                </p:selectOneRadio> 
+                                <p:message for="isbusqtrab" display="icon"/>
+                            </h:panelGrid>
+                            <h:panelGrid  columns="2"  rendered="#{formulariohv.bexplab}">                                       
+
+                                <h:outputText  value="¿Por cuántos meses ha buscado trabajo ?" style=" font-weight: bold"/>
+                                <p:spinner value="#{formulariohv.inummesbusqtrab}" min="0"/>    
+                                <h:outputText  value="Categoría ocupacional en su actual empleo:" style=" font-weight: bold"/>
+                                <p:selectManyCheckbox value="#{formulariohv.selectedCatocemp}" layout="pageDirection">  
+                                    <f:selectItem itemLabel="Patrono o socio activo" itemValue="a6_5_1" />  
+                                    <f:selectItem itemLabel="Empleado público" itemValue="a6_5_2" />  
+                                    <f:selectItem itemLabel="Empleado privado" itemValue="a6_5_3" />  
+                                    <f:selectItem itemLabel="Trabajador por cuenta propia" itemValue="a6_5_4" />  
+                                    <f:selectItem itemLabel="Trabajador familiar sin remuneración" itemValue="a6_5_5" />  
+                                    <f:selectItem itemLabel="Consultor" itemValue="a6_5_6" />  
+                                </p:selectManyCheckbox>
+                                <h:outputText  value="Nivel de satisfacción que le produce su ocupación.  (1=mínima, 5=máxima)" style=" font-weight: bold" />
+                                <p:selectOneRadio  value="#{formulariohv.snivsatis}"
+                                                   style=" font-family: Arial; font-size: 8pt" >  
+                                    <f:selectItem itemLabel="1" itemValue="1" />  
+                                    <f:selectItem itemLabel="2" itemValue="2" />                                   
+                                    <f:selectItem itemLabel="3" itemValue="3" />                                   
+                                    <f:selectItem itemLabel="4" itemValue="4" />                                   
+                                    <f:selectItem itemLabel="5" itemValue="5" />                                   
+                                </p:selectOneRadio> 
+                                <h:outputText  value="Correspondencia de la ocupación que realiza con su formación profesional. (1=mínima,5=máxima)" style=" font-weight: bold" />
+                                <p:selectOneRadio  value="#{formulariohv.scorocforma}"
+                                                   style=" font-family: Arial; font-size: 8pt" >  
+                                    <f:selectItem itemLabel="1" itemValue="1" />  
+                                    <f:selectItem itemLabel="2" itemValue="2" />                                   
+                                    <f:selectItem itemLabel="3" itemValue="3" />                                   
+                                    <f:selectItem itemLabel="4" itemValue="4" />                                   
+                                    <f:selectItem itemLabel="5" itemValue="5" />                                   
+                                </p:selectOneRadio>
+                                <h:outputText  value="Pertenece a alguna de estas redes:" style=" font-weight: bold" />
+                                <p:selectManyCheckbox value="#{formulariohv.selectedRed}" layout="pageDirection">  
+                                    <f:selectItem itemLabel="Red cientifica" itemValue="a6_8_1" />  
+                                    <f:selectItem itemLabel="Red profesional" itemValue="a6_8_2" />  
+                                    <f:selectItem itemLabel="Red social" itemValue="a6_8_3" />  
+                                    <f:selectItem itemLabel="Ninguna" itemValue="a6_8_4" />                                     
+                                </p:selectManyCheckbox>  
+                                <h:outputText  value="Tipo de experiencia profesional:"  style=" font-weight: bold"/>
+                                <p:selectManyCheckbox value="#{formulariohv.selectedexpprof}" layout="pageDirection">  
+                                    <f:selectItem itemLabel="Docencia e Investigación" itemValue="a7_1_1" />  
+                                    <f:selectItem itemLabel="Empresarial" itemValue="a7_1_2" />  
+                                    <f:selectItem itemLabel="Servicios públicos" itemValue="a7_1_3" />  
+                                </p:selectManyCheckbox> 
+                            </h:panelGrid>
+                            <h:panelGrid columns="1"  rendered="#{formulariohv.bexplab}">
+                                <h:outputText  value="Nombre de la institución en la que trabaja actualmente o de la última institución en que laboró" style=" font-weight: bold"/>
+                                <h:inputText autocomplete="of" binding="#{formulariohv.itxtinsttrab}" style="font-family: Arial; font-size: 8pt; width: 500px" />
+                            </h:panelGrid>
+                            <h:panelGrid columns="2" id="gsevtemp" rendered="#{formulariohv.bexplab}">
+                                <h:outputText  value="Sector al que pertenece la empresa o la instuitución donde trabaja" style=" font-weight: bold"/>
+                                <p:selectOneRadio  value="#{formulariohv.srsetempresa}"
+                                                   style=" font-family: Arial; font-size: 8pt" layout="nroColumns3">  
+                                    <f:selectItem itemLabel="Público" itemValue="1" />  
+                                    <f:selectItem itemLabel="Privado" itemValue="2" />                                          
+                                    <f:selectItem itemLabel="ONG" itemValue="3" />     
+                                    <f:selectItem itemLabel="O. Internacional" itemValue="4" />     
+                                    <f:selectItem itemLabel="Mixto" itemValue="5" />     
+                                    <f:selectItem itemLabel="Comunitario" itemValue="7" />   
+                                    <f:selectItem itemLabel="Otros" itemValue="6" />  
+                                    <p:ajax  update="gsevtemp" listener="#{formulariohv.sectoempresavalueChangeListener()}"/>
+                                </p:selectOneRadio> 
+                                <h:outputText  value="¿Cuáles ?" rendered="#{formulariohv.bsectempresa}"  style=" font-weight: bold"/>
+                                <h:inputText autocomplete="of" binding="#{formulariohv.itxtotrosecempresa}" style="font-family: Arial; font-size: 8pt; width: 300px" rendered="#{formulariohv.bsectempresa}"  />
+                            </h:panelGrid>
+                            <h:panelGrid columns="2"  rendered="#{formulariohv.bexplab}">
+                                <h:outputText  value="Rama de actividad económica de la empresa o institución en la que trabaja." style=" font-weight: bold" />
+                                <p:outputPanel id="pnlscetemp" >
+                                    <p:selectOneRadio  value="#{formulariohv.srramempresa}"
+                                                       style=" font-family: Arial; font-size: 8pt" layout="nroColumns2" >  
+                                        <f:selectItem itemLabel="Agricultura, ganadería, caza, pesca y sivicultura" itemValue="A" />  
+                                        <f:selectItem itemLabel="Industria Manufacturera" itemValue="B" />                                          
+                                        <f:selectItem itemLabel="Construcción e inmuebles" itemValue="C" />     
+                                        <f:selectItem itemLabel="Bancos e intermediación financiera" itemValue="D" />     
+                                        <f:selectItem itemLabel="Administración pública" itemValue="E" />     
+                                        <f:selectItem itemLabel="Enseñanza primaria" itemValue="F" />   
+                                        <f:selectItem itemLabel="Enseñanza media" itemValue="G" />                                                     
+                                        <f:selectItem itemLabel="Enseñanza superior" itemValue="H" />                                                     
+                                        <f:selectItem itemLabel="ComunicaCión" itemValue="I" />                                                     
+                                        <f:selectItem itemLabel="Salud y actividades de servicios sociales" itemValue="J" />                                                     
+                                        <f:selectItem itemLabel="Relaciones internacionales" itemValue="K" />                                                     
+                                        <f:selectItem itemLabel="Servicios Legales" itemValue="L" />                                                     
+                                        <f:selectItem itemLabel="Servicios públicos" itemValue="M" />                                                     
+                                        <f:selectItem itemLabel="Comercio" itemValue="N" />
+                                        <f:selectItem itemLabel="Turismo" itemValue="O" />
+                                        <f:selectItem itemLabel="Defensa" itemValue="P" />
+                                        <f:selectItem itemLabel="Consultoria social" itemValue="T" />
+                                    </p:selectOneRadio> 
+                                </p:outputPanel>                             
+                            </h:panelGrid>
+                            <h:panelGrid columns="1"  rendered="#{formulariohv.bexplab}">
+                                <h:outputText  value="Dirección de la institución:" style=" font-weight: bold" />
+                                <h:inputText autocomplete="of" binding="#{formulariohv.itxtdirinstitucion}" style="font-family: Arial; font-size: 8pt; width: 500px" />
+                                <h:outputText  value="Página web institucional:" style=" font-weight: bold" />
+                                <h:inputText autocomplete="of" binding="#{formulariohv.itxtpagwebinstitu}" style="font-family: Arial; font-size: 8pt; width: 500px" />
+                            </h:panelGrid>
+                            <h:panelGrid columns="2"  rendered="#{formulariohv.bexplab}">
+                                <h:outputText  value="Año en que usted empezó a trabajar en esa institución: "  style=" font-weight: bold"/>
+                                <p:inputMask mask="9999" value="#{formulariohv.ianioinitrabajo}" style=" width: 50px; text-align: center"/>                                                                       
+                                <h:outputText   value="Cargo que usted desempeña:" style=" font-weight: bold"  />
+                                <h:inputText autocomplete="of" binding="#{formulariohv.itxtcargdes}" style="font-family: Arial; font-size: 8pt; width: 300px" />
+                                <h:outputText  value="Número de personas bajo su responsabilidad:" style=" font-weight: bold" />
+                                <p:spinner value="#{formulariohv.inumperresponsabilidad}" min="0"/>
+                                <h:outputText  value="Nombre de su jefe inmediato:" style=" font-weight: bold"  />
+                                <h:inputText autocomplete="of" binding="#{formulariohv.itxtnomjefe}" style="font-family: Arial; font-size: 8pt; width: 300px" />
+                                <h:outputText  value="Cargo del jefe inmediato:" style=" font-weight: bold"  />
+                                <h:inputText autocomplete="of" binding="#{formulariohv.itxtcargjefe}" style="font-family: Arial; font-size: 8pt; width: 300px" />
+                            </h:panelGrid>
+
+                        </h:panelGrid>                                     
+                    </p:panel>
+                    <h:panelGrid style=" width: 90%" rendered="#{!formulariohv.bestadoencuesta}">
+                        <p:commandButton value="Aceptar"  icon="ui-icon-check" style="margin-left: 5px;" actionListener="#{formulariohv.btnAceptar}"  update="detalle" />
+                    </h:panelGrid> 
+                </h:form>                    
+            </p:panel>
+        </p:scrollPanel>
+
+    </p:panel>
+
+</ui:composition>
+

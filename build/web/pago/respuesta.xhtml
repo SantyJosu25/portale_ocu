@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:f="http://java.sun.com/jsf/core"  xmlns:h="http://java.sun.com/jsf/html"  xmlns:p="http://primefaces.org/ui">
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+                <meta name="apple-mobile-web-app-capable" content="yes"/>
+                <link rel="shortcut" href="#{request.contextPath}/resources/layout/img/logo.ico" type="image/x-icon"/>
+                <link rel="icon" href="#{request.contextPath}/resources/layout/img/logo.ico" type="image/x-icon"/>
+            </f:facet>
+            <script type="text/javascript">
+                //<![CDATA[
+                function _consultarPayPhone() {
+                    var urlParams = new URLSearchParams(window.location.search);
+                    $.ajax({
+                        data: JSON.stringify({"id": urlParams.get('id'), "clientTxId": urlParams.get('clientTransactionId')}),
+                        url: 'https://pay.payphonetodoesposible.com/api/button/V2/Confirm',
+                        type: 'POST',
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('Content-Type', "application/json"),
+                                    xhr.setRequestHeader('Authorization', 'Bearer #{facesContext.externalContext.getInitParameter('AUTORIZATION_PAYPHONE_KEY')}');
+                        },
+                        success: function SolicitarResp(respuesta) {
+                            window.parent._procesarRespuestaAPI(respuesta);
+                        }, error: function (msgError) {
+                            alert("Error en la llamada _consultarPayPhone :" + msgError.Message);
+                        }
+                    });
+                }
+                //]]>
+            </script>     
+        </h:head>
+        <h:body id="b1" style="background-color: beige" onload="_consultarPayPhone();statusDialog.show();" >
+            <h:form id="myForm">
+                <p:remoteCommand name="procesarRespuesta" oncomplete="return true;"/>
+            </h:form>
+         
+            <p:dialog id="pnlRelojArena" widgetVar="statusDialog" draggable="false" closable="false" showHeader="false" resizable="false" >
+                <h:panelGrid columns="2" >  
+                    <p:graphicImage library="images" name="loading.gif"  height="48" width="48"/>  
+                    <h:outputText value="Por favor espere, procesando pago....." style="margin-right: 12px; font-size: 13px;color: #458a87;font-weight: bold"/>  
+                </h:panelGrid>    
+            </p:dialog>
+        </h:body>
+    </f:view>
+</html>

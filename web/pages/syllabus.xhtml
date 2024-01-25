@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://java.sun.com/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://java.sun.com/jsf/core"
+                 xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+    <p:panel id="pnlContent"  header="SILABOS DE ASIGNATURAS DEL ALUMNO"  styleClass="myPanelHoja">
+        <h:form id="formAsignaturas">
+            <style>
+                .col1{width: 75%}
+                .col2{width: 10%}
+                .col3{width: 15%}
+                .ui-datatableDataAsig .ui-datatable-header{text-align: right; padding: 0px 2px; }
+                .ui-datatableDataAsig .ui-widget-header{color: transparent;border: none;}
+                .ui-estiloSelectOneMenuTrimestre{width: 160px;text-align: center;}
+                .ui-estiloSelectOneMenuTrimestre .ui-selectonemenu-label{color: brown;font-weight: bold}
+                .ui-state-default .ui-icon-pdfSilabo {background-image: url("#{resource['/images/pdf.png'] }");background-size: 16px 18px;}
+            </style>
+            <p:dataTable id="dataAsig" var="asig" value="#{verSyllabus.asignaturas}" style="height: 99%"
+                         rowStyleClass="#{asig.estadoSyllabus=='N'?'noAprobado':null}" rowIndexVar="rowIndex" widgetVar="asigWidgetVar"
+                         selection="#{verSyllabus.asignaturaSelected}" 
+                         rowKey="#{asig.asignaturaModelPk.codigoMateria}:#{asig.asignaturaModelPk.codigoNivel};#{asig.asignaturaModelPk.vacCodnum}=#{asig.asignaturaModelPk.gacCodnum}"  
+                         emptyMessage="No existen sílabos generados !" selectionMode="single" styleClass="evalFormStyle ui-datatableDataAsig" >
+                <f:facet name="header"  >
+                    <h:panelGrid id="botones" columns="3" columnClasses="col1,col2,col3"  >
+                        <p:outputLabel value="Seleccione un trimestre para ver el horario -----&gt;" escape="true" style="color: brown;font-size: 12px"/>
+                        <p:selectOneMenu value="#{verSyllabus.trimestre}" id="trimestre" style="width: 200px" styleClass="ui-estiloSelectOneMenuTrimestre">
+                            <f:selectItem  itemLabel="Seleccionar..." itemValue="#{null}" />
+                            <f:selectItem  itemLabel="PRIMER TRIMESTRE" itemValue="1T" />
+                            <f:selectItem  itemLabel="SEGUNDO TRIMESTRE" itemValue="2T" />
+                            <f:selectItem  itemLabel="TERCER TRIMESTRE" itemValue="3T" />
+                            <f:selectItem  itemLabel="CUARTO TRIMESTRE" itemValue="4T" />
+                            <p:ajax update="commandButtonVhorario"/>
+                        </p:selectOneMenu>
+                        <p:commandButton id="commandButtonVhorario"  value="Ver Horario" icon="ui-icon-search" disabled="#{verSyllabus.trimestre eq null}" 
+                                         title="Ver Horario" update="dataAsig :pdfDialog" action="#{verSyllabus.imprimirHorario}"  oncomplete="pdfWidget.show();"/>
+                    </h:panelGrid>                   
+                </f:facet>
+                <p:column headerText="Ord." style="text-align: center;" width="3%">  
+                    <span style="font-weight: bold">#{rowIndex+1}</span>
+                </p:column>                          
+                <p:column headerText="Asignatura"  width="55%" style="text-transform: uppercase">   
+                    #{asig.nombreMateria} - #{asig.asignaturaModelPk.codigoMateria} 
+                </p:column>    
+                <p:column headerText="Código" style="text-align: center" width="5%">  
+                    #{asig.identifMateria}  
+                </p:column>  
+                <p:column headerText="Trimestre" style="text-align: center"  width="5%">   
+                    #{asig.asignaturaModelPk.codigoNivel}T  
+                </p:column>     
+                <!--p:column style="text-align: center"  width="10%">
+                    <p:commandLink update="dataAsig :pnlHorario"  oncomplete="dlg2.show();"  value="Ver horario" action="#{verSyllabus.verHorario}">
+                        <f:setPropertyActionListener value="#{asig}" target="#{verSyllabus.asignaturaSelected}" />  
+                    </p:commandLink>
+                </p:column-->                 
+                <!--p:column headerText="Estado Sílabo"  style="text-align: center"  width="13%">
+                    <h:outputText value="#{asig.estadoSyllabus eq 'A'?'Aprobado':'No disponible'}" style="color:#{asig.estadoSyllabus eq 'A'?'limegreen':'red'}"/>  
+                </p:column-->             
+
+                <p:column headerText="Estado Sílabo"  style="text-align: center"  width="13%">
+                    <h:outputText value="#{asig.estadoSyllabus eq 'A'? 'Aprobado':asig.estadoSyllabus eq 'P' or asig.estadoSyllabus eq 'X' ? 'Pendiente': null }" 
+                                  style="color:#{asig.estadoSyllabus eq 'A' ?'limegreen':'red'};
+                                  font-weight: #{asig.estadoSyllabus eq 'A' ?'bold':asig.estadoSyllabus eq 'C'?'bold':'normal'};text-transform: uppercase"/>
+                </p:column>   
+                <p:column headerText="Ver Sílabo"  style="text-align: center"  width="8%">  
+                    <!--p:commandButton id="commandButtonVer"  icon="ui-icon-pdfSilabo" title="Ver Sílabo"  update="dataAsig"
+                                     partialSubmit="true" immediate="true"  process="@this"
+                                     rendered="#{asig.estadoSyllabus eq 'A'}"
+                                     action="#{verSyllabus.imprimirSp}" >  
+                        <f:setPropertyActionListener value="#{asig}" target="#{verSyllabus.asignaturaSelected}" />  
+                    </p:commandButton-->                    
+                    <p:commandButton id="commandButtonVer"  icon="ui-icon-pdfSilabo" title="Ver Sílabo"   update="@parent"  partialSubmit="true" immediate="true" 
+                                     onstart="asigWidgetVar.unselectAllRows();asigWidgetVar.selectRow(#{rowIndex});" 
+                                     rendered="#{asig.estadoSyllabus eq 'A'}" actionListener="#{verSyllabus.opcionesSilaboButton_processAction}">  
+                        <f:attribute value="#{asig}" name="asignatura" />  
+                    </p:commandButton>
+                </p:column>     
+            </p:dataTable>
+
+        </h:form> 
+        <p:dialog header="Horario de clase" widgetVar="dlg2" modal="true" appendToBody="true" width="550" height="400" resizable="false"
+                  showEffect="fade" hideEffect="fade">
+            <p:dataTable id="pnlHorario" value="#{verSyllabus.asignaturaSelected.horarios}" var="hor" style="font-size: 8pt">
+                <p:column headerText="Clase"  style="text-align: center"  width="3%">
+                    <p:outputLabel value="#{hor.ordinal}" style="padding-right: 5px;"/>
+                </p:column>
+                <p:column headerText="Fecha" width="50%">
+                    <h:outputText value="#{hor.caleventoFecha}" 
+                                  style="padding-right: 5px;color: #{hor.cursor eq 1 and (hor.sig eq -1 or hor.sig eq 0)?'blue':hor.cursor eq 1 and hor.sig eq 1 ?'green':'red'};
+                                  font-weight: #{hor.cursor eq 1 and (hor.sig eq -1 or hor.sig eq 0) ?'bold':'normal'}; opacity: #{hor.cursor le 0 ? '0.50':'1.0'};">
+                        <f:convertDateTime  locale="es" pattern="EEEEEEEE, dd' de 'MMMM' de 'yyyy"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Hora"  style="text-align: center"  width="22%">
+                    <h:outputText value="#{hor.caleventoHempieza}" style="padding-right: 5px;color: #{hor.cursor eq 1 and (hor.sig eq -1 or hor.sig eq 0)?'blue':hor.cursor eq 1 and hor.sig eq 1 ?'green':'red'};
+                                  font-weight: #{hor.cursor eq 1 and (hor.sig eq -1 or hor.sig eq 0) ?'bold':'normal'}; opacity: #{hor.cursor le 0 ? '0.50':'1.0'};">
+                        <f:convertDateTime locale="es" pattern="H:mm"  timeZone="EST"/>
+                    </h:outputText>
+                    <h:outputText value="#{hor.caleventoHtermina}" style="color: #{hor.cursor eq 1 and (hor.sig eq -1 or hor.sig eq 0)?'blue':hor.cursor eq 1 and hor.sig eq 1 ?'green':'red'};
+                                  font-weight: #{hor.cursor eq 1 and (hor.sig eq -1 or hor.sig eq 0) ?'bold':'normal'}; opacity: #{hor.cursor le 0 ? '0.50':'1.0'};">
+                        <f:convertDateTime locale="es" pattern="'  a  'H:mm" timeZone="EST"/>
+                    </h:outputText>  
+                </p:column>
+                <p:column headerText="Lugar"  style="text-align: center"  width="25%">
+                    <h:outputText value="#{hor.instalacionAsignada}" style="color: #{hor.cursor eq 1 and (hor.sig eq -1 or hor.sig eq 0)?'blue':hor.cursor eq 1 and hor.sig eq 1 ?'green':'red'};
+                                  font-weight: #{hor.cursor eq 1 and (hor.sig eq -1 or hor.sig eq 0) ?'bold':'normal'}; opacity: #{hor.cursor le 0 ? '0.50':'1.0'};"/>
+                </p:column>
+            </p:dataTable>
+        </p:dialog>
+    </p:panel>
+
+
+</ui:composition>
+

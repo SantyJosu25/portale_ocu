@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://java.sun.com/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://java.sun.com/jsf/core"
+                 xmlns:pe="http://primefaces.org/ui/extensions">
+    <p:panel id="pnlContent" header="EVALUACION DE PROGRAMAS"  styleClass="myPanelHoja">
+        <h:form id="formEval">
+            <p:dataTable id="dataEnc" var="enc" value="#{programasForm.progEncuestaDataModel}" selection="#{programasForm.objSelected}"
+                         emptyMessage="No existen evaluaciones de Programas abiertas !" selectionMode="single" styleClass="evalFormStyle" 
+                         scrollable="true" scrollHeight="135">
+                <p:ajax event="rowSelect" listener="#{programasForm.onRowSelect}" update=":pnlForm "/>
+                <p:ajax event="rowUnselect" listener="#{programasForm.onRowUnselect}" update=":pnlForm"/> 
+                <p:column headerText="Ord." style="text-align: center"  width="2%">    
+                    #{programasForm.progEncuestaDataModel.rowIndex+1}
+                </p:column>   
+                <p:column headerText="Programa" width="20%" >   
+                    #{enc.programa}
+                </p:column>                   
+                <p:column headerText="Formulario de Evaluación" width="48%" >
+                    #{enc.titulo}
+                </p:column>  
+                <p:column headerText="Fecha Cierre" style="text-align: center"  width="10%">    
+                    <h:outputText value="#{enc.fechaFin}" style="color:#{enc.estado==1 ?'limegreen':enc.habilitado=='S'?'blue':'red'}">
+                        <f:convertDateTime locale="es" dateStyle="long"/>
+                    </h:outputText>  
+                </p:column>  
+                <p:column headerText="Estado - Evaluación"  style="text-align: center;font-weight: bold"  width="20%">
+                    <h:outputText value="#{enc.habilitado=='S' and enc.estado==0 ?'Por Realizar':enc.habilitado=='S' and enc.estado==1?'Realizada':enc.habilitado=='N' and enc.estado==1?'Período Cerrado - Realizada':'Período Cerrado - No Realizada'}"
+                                  style="color:#{enc.estado==1 ?'limegreen':enc.habilitado=='S'?'blue':'red'}"/>  
+                </p:column>   
+            </p:dataTable>
+        </h:form>  
+        <p:panel id="pnlForm" header="Formulario de evaluación" widgetVar="carDialog" rendered="#{programasForm.progEncuestaDataModel.rowCount ne 0}">
+            <h:form id="formCenter" style="text-align: center" >
+                <p:outputLabel style="color:red;font-size: 10pt;text-decoration: blink;text-transform: capitalize" escape="false"
+                               value="#{programasForm.objSelected==null?'Seleccione un formulario de Evaluación....':
+                                        programasForm.objSelected.estado==1?
+                                        'Evaluación del: '.concat('&lt;br/&gt;').concat('&lt;br/&gt;').concat(programasForm.objSelected.titulo).concat('&lt;br/&gt;').concat('&lt;br/&gt;').concat(' ya realizada !'):
+                                        programasForm.objSelected.habilitado=='N'?'Evaluación del: '.concat('&lt;br/&gt;').concat('&lt;br/&gt;').concat(programasForm.objSelected.titulo).concat('&lt;br/&gt;').concat('&lt;br/&gt;').concat(' No realizada - Evaluación Cerrada'):''}"/>
+                <h:panelGroup id="panelGroupCenter">
+                    <ui:include src="#{navigationMgmtBean.openPage}.xhtml">
+                        <ui:param name="beanForm" value="#{programasForm}"/>
+                    </ui:include>
+                </h:panelGroup>
+            </h:form>        
+        </p:panel>
+    </p:panel>
+
+
+</ui:composition>
+

@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://java.sun.com/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://java.sun.com/jsf/core">
+
+    <p:panel id="pnlContent" header="CONSULTA DE NOTAS"  styleClass="myPanelHoja" >
+        <style>
+            .ui-datatable-info tbody td{
+                border-style:none;
+                padding:0px 0px;
+                width: auto;
+            }
+        </style>
+        <h:form id="verNotas">
+            <h:panelGrid columns="4" cellpadding="5" cellspacing="0">
+                <p:outputLabel id="outputLabelCiclo" value="Ciclo Acacémico:" style="font-weight: bold;color: blue" for="selectOneMenuCiclo"/>
+                <p:selectOneMenu id="selectOneMenuCiclo" value="#{verNotasBean.anio}" style="width: 210px"  >  
+                    <f:selectItem itemValue="" itemLabel="Seleccione ..." noSelectionOption="true" />                        
+                    <f:selectItems value="#{verNotasBean.ciclos}"  var="ciclo" itemValue="#{ciclo.matriculaPK.anio}"
+                                   itemLabel="#{ciclo.nombreAnio}" itemDescription="#{ciclo.nombreAnio}"/>
+                    <p:ajax update="dataAsig"   listener="#{verNotasBean.handleCicloChange}" />                 
+                </p:selectOneMenu> 
+            </h:panelGrid>                
+            <p:dataTable id="dataAsig" var="varTrimestre" value="#{verNotasBean.periodoNotas}" style="height: 99%"
+                         rowIndexVar="rowIndex" rowStyleClass="ui-datatable-even"
+                          
+                         emptyMessage="No existen asignaturas asignadas!" selectionMode="single" styleClass="evalFormStyle">
+                <p:columnGroup type="header">  
+                    <p:row>  
+                        <p:column headerText="Ord." />
+                        <p:column headerText="Código" style="text-transform: uppercase"/>  
+                        <p:column headerText="Asignatura" style="text-transform: uppercase"/>  
+                        <p:column headerText="Estado" style="text-transform: uppercase"/>  
+                        <p:column headerText="Tipo" style="text-transform: uppercase"/>      
+                        <p:column headerText="Nro. Cred." style="text-transform: uppercase"/> 
+                        <p:column headerText="Nota" style="text-transform: uppercase"/> 
+                        <p:column headerText="% Asistencia" style="text-transform: uppercase"/>
+                        <p:column headerText="Procesos cumplidos" style="text-transform: uppercase"/>
+                    </p:row>  
+                </p:columnGroup> 
+                <p:subTable id="notasTable" value="#{varTrimestre.asignaturas}" var="varNota"  >
+                    <f:facet name="header">  
+                        <h:outputText value="Trimestre: #{varTrimestre.trimestre}" style="color: brown;font-size: 9pt;"/>
+                    </f:facet>
+                    <p:column headerText="Ord." style="text-align: center"  width="2%">   
+                        #{varTrimestre.asignaturas.indexOf(varNota)+1}
+                    </p:column>                          
+                    <p:column headerText="Código" style="text-align: center;text-transform: uppercase" width="5%">  
+                        #{varNota.identifMateria}
+                    </p:column>                  
+                    <p:column headerText="Asignatura"  width="25%" style="text-transform: uppercase">      
+                        #{varNota.nombreMateria}
+                    </p:column>     
+                    <p:column headerText="Estado"  width="3%" style="text-align: center;text-transform: uppercase">      
+                        <h:outputText style="text-transform: capitalize;
+                                      color: #{varNota.matnivEstado eq 'C'? varNota.estadoRegmat eq 'A'?'limegreen':'red':'red'};
+                                      visibility:  #{varNota.anio le 2011 ?'visible':
+                                                     varNota.matnivEstado eq 'C'?
+                                                     varNota.estadoNtciclo eq 'R'?'visible':
+                                                     varNota.evaluacionRealizada ne 0?
+                                                     varNota.estadoPagEstampilla eq 0?'hidden':'visible':'visible':'hidden'}"
+                                      value="#{varNota.estadoNtciclo eq 'A'?'Aprobado':varNota.estadoNtciclo eq 'R'?'Reprobado':'Sin Nota'}"/> 
+                    </p:column>                 
+                    <p:column headerText="Tipo"  width="2%" style="text-align: center;text-transform: uppercase">     
+                        #{varNota.siglaTmateria}
+                    </p:column>             
+                    <p:column headerText="Nro. Cred."  width="5%" style="text-align: center;text-transform: uppercase">       
+                        #{varNota.ncredRegmat}
+                    </p:column>                     
+                    <p:column headerText="Nota"  width="2%" style="text-align: center;text-transform: uppercase">       
+                             <h:outputText value="#{verNotasBean.formatTexto(varNota.notaNtciclo)}" 
+                                           style="visibility: #{varNota.anio le 2011 ?'visible':
+                                                     varNota.matnivEstado eq 'C'?
+                                                     varNota.estadoNtciclo eq 'R'?'visible':
+                                                     varNota.evaluacionRealizada ne 0?
+                                                     varNota.estadoPagEstampilla eq 0?'hidden':'visible':'visible':'hidden'}"/>
+                    </p:column>      
+                    <p:column headerText="% Asistencia"  width="3%" style="text-align: center;text-transform: uppercase">      
+                        <h:outputText value="#{varNota.asistenciaNtciclo}" 
+                                      style=" visibility:  #{varNota.matnivEstado eq 'C'? varNota.estadoNtciclo eq 'R'?'visible':
+                                               varNota.anio le 2011 ? 'visible':varNota.evaluacionRealizada ne -1? varNota.evaluacionRealizada ne 0? varNota.estadoPagEstampilla eq 0?'hidden':'visible':'visible':'hidden':'hidden'}"/>
+                    </p:column>    
+                    <p:column headerText="Procesos cumplidos"  style="text-transform: uppercase" width="10%">          
+                        <h:panelGrid columns="2" border="0" styleClass="ui-datatable-info" >
+                            <p:graphicImage library="images" name="#{varNota.evaluacionRealizada eq -1?'enconstruccion.png':varNota.evaluacionRealizada eq 0?'listo.png':'error.png'}" width="18" height="18"/>
+                            <h:outputText  value="#{varNota.evaluacionRealizada eq -1?'Evaluación no calendarizada':varNota.evaluacionRealizada eq 0?'Evaluación realizada': varNota.estadoPagEstampilla eq 1? 'Evaluación no realizada - Estampilla pagada':'Evaluación no realizada'}"
+                                           style="text-transform: capitalize;color: #{varNota.evaluacionRealizada eq -1?'blue':varNota.evaluacionRealizada eq 0?'limegreen':'red'}">
+                            </h:outputText>    
+                            <p:graphicImage library="images" name="#{varNota.estadoNtciclo ne 'S'?'listo.png':'error.png'}" width="18" height="18"/>
+                            <h:outputText  value="#{varNota.estadoNtciclo ne 'S'?'Nota ingresada':'Sin Nota'}"
+                                           style="text-transform: capitalize;
+                                           color: #{varNota.estadoNtciclo ne 'S'?'limegreen':'red'}">
+                            </h:outputText> 
+                            <p:graphicImage library="images" name="#{varNota.matnivEstado eq 'C'?'listo.png':'error.png'}" width="18" height="18"
+                                            rendered="#{varNota.matnivEstado eq 'C' or varNota.estadoNtciclo ne 'S'}"/>
+                            <h:outputText  value="#{varNota.matnivEstado eq 'C'?'Nota asentada':'Nota no asentada'}"
+                                           rendered="#{varNota.matnivEstado eq 'C'  or varNota.estadoNtciclo ne 'S'}"
+                                           style="text-transform: capitalize;
+                                           color: #{varNota.matnivEstado eq 'C'?'limegreen':'red'}">
+                            </h:outputText>                              
+                        </h:panelGrid>
+                    </p:column>    
+                </p:subTable>                 
+            </p:dataTable>
+        </h:form>
+    </p:panel>
+
+</ui:composition>
+

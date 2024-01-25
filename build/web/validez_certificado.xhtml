@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <title>Portal del Estudiante UASB</title>
+        <link rel="shortcut icon" href="#{request.contextPath}/resources/layout/img/logo.ico" type="image/x-icon"></link>
+        <link rel="icon" href="#{request.contextPath}/resources/layout/img/logo.ico" type="image/x-icon"></link>
+
+        <style>
+            body .ui-buttonIngresar {
+                background-color: #00444C;
+                color: #ffffff;
+                line-height: 2.0 !important;
+                border-radius: 6px !important;
+                width: 90px;
+            }
+
+            body .ui-dialogVerMensaje .ui-dialog-content {
+                background-color: beige;
+            }
+
+            body .ui-dialogVerMensaje .ui-dialog-titlebar,
+            body .ui-dialogVerMensaje .ui-widget-header {
+                padding: 0px 14px;
+                font-size: 12px;
+                color: white;
+                background-color: #00444c;
+            }
+
+            .ui-clock.ui-widget-header {
+                background: none;
+                padding: 0px 0px;
+                border: none;
+                font-size: 11px;
+                color: #4F4F4F; 
+                padding: 0px 0;
+            }
+
+            .ui-panelgridMensaje .ui-widget-content,
+            .ui-panelgrid-blank {
+                border: 10px solid transparent;
+                background: transparent;
+            }
+
+            .container_ {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                min-height: 96.2% !important;
+            }
+
+            .header, .footer {
+                width: 100%;
+                background-color: #00444c;
+                color: white;
+                text-align: center;
+            }
+
+            .top-header, .bottom-header {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px;
+                text-align: left;
+            }
+
+            .network-contact a {
+                margin-right: 10px;
+            }
+
+            .content_ {
+                width: 100%;
+            }
+            
+            .footer {
+                min-height: 3.8% !important;
+            }
+
+            .login-box {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-top: 20px;
+                width: auto !important;
+            }
+
+            .login-header {
+                font-size: 18px;
+            }
+
+            .login-content {
+                width: 100%;
+                margin-top: 20px;
+            }
+
+            .copyright {
+                padding: 10px;
+            }
+
+            body .content_ .login-box .login-headerval {text-align: center;line-height: 3;padding: 0 20px;}
+            body .content_ .login-box .login-contentval {padding: 0px 30px 20px 30px;}
+            .colorLabelTitulos{color: #00444C;font-size: 14px;font-style:  oblique;font-weight: bold;}
+        </style>
+    </h:head>
+
+    <h:body>
+        <div class="container_">
+            <div class="header">
+                <div class="top-header">
+                    <div class="mail-contact">
+                        <i class="far fa-envelope-open"></i>
+                        <span>mesadeayuda@uasb.edu.ec</span>
+                    </div>
+                    <div class="phone-contact">
+                        <i class="fas fa-phone-alt"></i>
+                        <span>(593 2) 322 8085 - 299 3600</span>
+                    </div>
+                    <div class="network-contact">
+                        <a target="_blank" href="https://www.facebook.com/uasbecuador/" class="p-mr-2">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a target="_blank" href="https://twitter.com/uasbecuador" class="p-mr-2">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a target="_blank" href="https://www.instagram.com/uasbecuador" class="p-mr-2">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a target="_blank" href="https://www.linkedin.com/school/uasbecuador" class="p-mr-2">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a> 
+                    </div>
+                </div>
+                <div class="bottom-header">
+                    <div class="logo">
+                        <h:graphicImage name="img/logo.png" library="layout" class="img-logo"/>
+                    </div>
+                    <div class="separator"></div>
+                    <div class="name-app">
+                        <span class="name-bold">PORTAL DEL ESTUDIANTE</span>
+                        <span class="name-bold">VALIDEZ DE CERTIFICADOS</span>
+                        <span class="name-bold"><p:clock  mode="server" pattern="dd/MM/yyyy  HH:mm:ss" /></span>
+                    </div>                   
+                </div>
+            </div>
+
+            <div class="content_">
+                <div class="login-box">
+                    <div class="login-headerval">
+                        <span style="font-size: 18px">
+                            <b>Sistema de validación de certificados UASB</b>
+                        </span>
+                    </div>
+                    <div class="login-contentval">
+                        <p:panelGrid columns="2"  styleClass="ui-panelgrid-blank form-group">
+                            <p:graphicImage name="#{validarCertBean.certificado != null ? 'listo.png':'error.png'}" library="images" />                   
+                            <p:outputLabel value="#{validarCertBean.mensaje}"
+                                           style="font-size: 12pt;color:#{validarCertBean.certificado != null ? 'blue':'red'};" styleClass="colorLabelTitulos"/>    
+                        </p:panelGrid>
+                        <p:panelGrid columns="1" styleClass="ui-panelgrid-blank form-group" rendered="#{validarCertBean.certificado != null}">
+                            <table border="0" styleClass="colorLabelTitulos">
+                                <tr>
+                                    <th style="color: #00444C;font-size: 14px;font-style:  oblique;">N° Certificado:</th>
+                                    <th style="color: #00444C;font-size: 14px;font-style:  oblique;font-weight: bold;">#{validarCertBean.certificado.cerNumero}</th>
+                                </tr>
+                                <tr>
+                                    <th style="color: #00444C;font-size: 14px;font-style:  oblique;">Solicitado por:</th>
+                                    <th style="color: #00444C;font-size: 14px;font-style:  oblique;font-weight: bold;">#{validarCertBean.estudiante.usuNombreUsuario} #{validarCertBean.estudiante.usuApellUsuario}</th>
+                                </tr>
+                                <tr>
+                                    <th style="color: #00444C;font-size: 14px;font-style:  oblique;">Emitido el:</th>
+                                    <th style="color: #00444C;font-size: 14px;font-style:  oblique;font-weight: bold;">#{validarCertBean.fecha}</th>
+                                </tr>
+                            </table>
+                        </p:panelGrid>
+                    </div>
+                </div>
+            </div>   
+        </div>
+
+        <div class="footer">
+            <div class="copyright">
+                &#169;Todos los derechos reservados. Universidad Andina Simón Bolívar 2023
+            </div>
+        </div>     
+
+        <h:outputScript name="clock_es.js" library="js"/>
+        <h:outputScript library="js" name="principal.js" target="head"/>
+        <h:outputScript name="js/materialize.min.js" library="layout" />        
+        <h:outputStylesheet name="css/materialize.css" library="layout" />          
+        <h:outputStylesheet name="css/fontawesome.css" library="layout" />
+        <h:outputStylesheet name="css/layout.css" library="layout" />
+        <h:outputStylesheet name="css/material-design-iconic-font.css" library="layout" />
+    </h:body>
+</html>

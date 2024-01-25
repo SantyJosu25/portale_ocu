@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://java.sun.com/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://java.sun.com/jsf/core">
+
+    <p:panel id="pnlContent" header="REPORTES DE EVALUACIONES"  styleClass="myPanelHoja" >
+        <style>
+            .ui-datatable-info tbody td{
+                border-style:none;
+                padding:0px 0px;
+                width: auto;
+            }
+        </style>
+        <h:form >
+            <h:panelGrid columns="5" cellpadding="5" cellspacing="0">
+                <p:outputLabel  value="Reportes disponibles:" style="font-weight: bold;color: blue" for="selectOneMenuRep"/>
+                <p:selectOneMenu id="selectOneMenuRep" value="#{RepEvalConsoBean.reporte}" style="width: 210px"  >  
+                    <f:selectItem itemValue="#{null}" itemLabel="Seleccione uno..." noSelectionOption="true" />   
+                    <f:selectItem itemValue="EvalDeEstudAAsignaturaConsol2020" itemLabel="Estudiante a la Asignatura"/>   
+                    <f:selectItem itemValue="EvalDeEstudAlDocenteConsol2020" itemLabel="Estudiante al Docente"/>   
+                    <f:selectItem itemValue="EvalDeEstudAlProgramaConsol2020" itemLabel="Estudiante al Programa"/>  
+                    <p:ajax update="selectOneMenuCiclo"   listener="#{RepEvalConsoBean.resetValor()}" />                       
+                    <p:ajax update="commandButtonImprimir"/> 
+                </p:selectOneMenu> 
+                <p:outputLabel  value="Ciclo Acacémico:" style="font-weight: bold;color: blue" for="selectOneMenuCiclo"/>
+                <p:selectOneMenu id="selectOneMenuCiclo" value="#{RepEvalConsoBean.anio}" style="width: 210px"  
+                                 disabled="#{RepEvalConsoBean.reporte eq 'EvalDeEstudAlProgramaConsol2020'}">  
+                    <f:selectItem itemValue="" itemLabel="Seleccione ..." noSelectionOption="true" />                        
+                    <f:selectItems value="#{RepEvalConsoBean.ciclos}"  var="ciclo" itemValue="#{ciclo.matriculaPK.anio}"
+                                   itemLabel="#{ciclo.nombreAnio}" itemDescription="#{ciclo.nombreAnio}"/>
+                </p:selectOneMenu> 
+                <p:commandButton id="commandButtonImprimir"  icon="ui-icon-search" title="Ver reporte"  update=":pdfDialog"
+                                 action="#{RepEvalConsoBean.imprimir}" disabled="#{RepEvalConsoBean.reporte eq null}">  
+                </p:commandButton>
+            </h:panelGrid>                
+        </h:form>
+    </p:panel>
+
+</ui:composition>
+

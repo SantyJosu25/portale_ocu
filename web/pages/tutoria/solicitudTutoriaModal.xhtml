@@ -1,0 +1,277 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://java.sun.com/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://java.sun.com/jsf/core"
+                 xmlns:pe="http://primefaces.org/ui/extensions"
+                 >
+    <script type="text/javascript">
+        PrimeFacesExt.locales.TimePicker['es'] = {
+            hourText: 'Hora',
+            minuteText: 'Minuto',
+        };
+    </script>
+    <style>
+        .ui-datepicker-week-end {
+            display: none;
+        }
+    </style>
+    <h:panelGrid columns="1"  columnClasses="colArchivo1">
+        <h:panelGrid columns="2"  columnClasses="colArchivo1">
+            <h:outputText  value="Año" style="font-weight: bold"/>
+            <h:panelGrid columns="1"> 
+                <p:outputLabel value="#{solicitudTutoriaForm.anioAcadEstudiante}" />
+            </h:panelGrid>
+            <h:outputText  value="Área" style="font-weight: bold"/>
+            <h:panelGrid columns="1"> 
+                <p:outputLabel value="#{solicitudTutoriaForm.area}" />
+            </h:panelGrid>
+            <h:outputText  value="Programa" style="font-weight: bold"/>
+            <h:panelGrid columns="1"> 
+                <p:outputLabel value="#{solicitudTutoriaForm.programa}" />
+            </h:panelGrid>
+            <h:outputText  value="Fase de tus estudios" style="font-weight: bold"/>
+            <h:panelGrid columns="1"> 
+                <p:outputLabel value="#{solicitudTutoriaForm.fase}" />
+            </h:panelGrid>
+        </h:panelGrid>            
+        <h:panelGrid columns="4"  columnClasses="colArchivo1">
+            <h:outputText  value="Tema*" style="font-weight: bold"/> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+            <h:panelGrid columns="3" id="aenomprog">
+                <p:inputTextarea binding="#{solicitudTutoriaForm.itxtema}" readonly="#{solicitudTutoriaForm.beditar}"
+                                 id="iaeprog" style=" width: 100%; height: 25px; text-transform: uppercase"
+                                 rows="3" cols="106" maxlength="200" counter="countcarprog" counterTemplate="{0} Caracteres Restantes" autoResize="false"
+                                 required="true" requiredMessage="Tema: se requiere un valor" >
+                    <p:ajax  update="aenomprog" immediate="true" /> 
+                </p:inputTextarea>
+                <p:message for="iaeprog" display="icon"/>
+                <h:outputText id="countcarprog"/>
+            </h:panelGrid>
+        </h:panelGrid>
+        <h:panelGrid columns="2" id="pgsoltutoria">
+            <h:panelGrid columns="4"  columnClasses="colArchivo1">
+                <h:outputText  value="Tipo de tutoría *" style="font-weight: bold"/>
+                <h:panelGrid columns="2" id="pgtiptuto">
+                    <p:selectOneMenu value="#{solicitudTutoriaForm.smtiptutoria.value}"  disabled="#{solicitudTutoriaForm.beditar}"
+                                     id="somtiptuto" style="width: 200px"
+                                     required="true" requiredMessage="Tipo de tutoría: se requiere un valor">
+                        <f:selectItem  itemLabel="Escoja uno.." itemValue="#{null}" />
+                        <f:selectItem  itemLabel="ACADÉMICA" itemValue="A" />
+                        <f:selectItem  itemLabel="TÉCNICA" itemValue="T" />                                                                                                                           
+                        <p:ajax update="pgsoltutoria pgtiptuto gtiptutor labeltipopub" listener="#{solicitudTutoriaForm.tipTutorporfasevalueChangeListener()}"/>
+                    </p:selectOneMenu> 
+                    <p:message for="somtiptuto" display="icon"/>
+                </h:panelGrid>
+                <h:outputText  value="Docente/Instancia*" style="font-weight: bold" id="labeltipopub" rendered="#{solicitudTutoriaForm.btutorporfase}"/> 
+                <h:panelGrid columns="2" id="gtiptutor"  rendered="#{solicitudTutoriaForm.btutorporfase}">
+                    <p:selectOneMenu value="#{solicitudTutoriaForm.smtutorporfase.value}" id="tiptutor" style="width: 200px" disabled="#{solicitudTutoriaForm.beditar}"
+                                     required="true" requiredMessage="Docente/Instancia: se requiere un valor">
+                        <f:selectItem  itemLabel="Escoja uno.." itemValue="#{null}" />
+                        <f:selectItems value="#{solicitudTutoriaForm.listTutoresbyfase}" />
+                        <p:ajax update="pgsoltutoria gtiptutor"  listener="#{solicitudTutoriaForm.mostrarProfeorTutor()}"/>
+                    </p:selectOneMenu>                        
+                    <p:message for="tiptutor" display="icon"/>
+                </h:panelGrid>
+                <h:outputText  value="Asignatura *" style="font-weight: bold"  id="omateria" rendered="#{solicitudTutoriaForm.bdocente}"/>
+                <h:panelGrid columns="2" id="pgmateria" rendered="#{solicitudTutoriaForm.bdocente}">
+                    <p:selectOneMenu value="#{solicitudTutoriaForm.smmateria.value}" disabled="#{solicitudTutoriaForm.beditar}"
+                                     id="sommateria" style="width: 200px"
+                                     required="true" requiredMessage="Materia: se requiere un valor">
+                        <f:selectItem itemLabel="Seleccionar..." itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{solicitudTutoriaForm.listaMaterias}" var="mat" itemValue="#{mat[1]}" itemLabel="#{mat[1]}" />     
+                        <p:ajax update="pgmateria pgsoltutoria pgdocente odocente" listener="#{solicitudTutoriaForm.docenteByMateria()}" />
+                    </p:selectOneMenu> 
+                    <p:message for="sommateria" display="icon"/>
+                </h:panelGrid>
+                <h:outputText  value="Docente*" style="font-weight: bold"  id="odocente" rendered="#{solicitudTutoriaForm.bdocente}"/>
+                <h:panelGrid columns="2" id="pgdocente" rendered="#{solicitudTutoriaForm.bdocente}">
+                    <p:selectOneMenu value="#{solicitudTutoriaForm.smdocente.value}" disabled="#{solicitudTutoriaForm.beditar}"
+                                     id="somdocente" style="width: 200px"
+                                     required="true" requiredMessage="Docente: se requiere un valor">
+                        <f:selectItem itemLabel="Seleccionar..." itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{solicitudTutoriaForm.listaDocentes}" var="d" itemValue="#{d[0]}" itemLabel="#{d[1]}" />     
+                        <p:ajax update="pgdocente" />
+                    </p:selectOneMenu> 
+                    <p:message for="somdocente" display="icon"/>
+                </h:panelGrid>
+                <h:outputText  value="Tutor*" style="font-weight: bold"  id="otutor" rendered="#{solicitudTutoriaForm.btutor}"/>
+                <h:panelGrid columns="2" id="pgtutor" rendered="#{solicitudTutoriaForm.btutor}">
+                    <p:selectOneMenu value="#{solicitudTutoriaForm.smtutor.value}" disabled="#{solicitudTutoriaForm.beditar}"
+                                     id="somtutor" style="width: 200px"
+                                     required="true" requiredMessage="Tutor: se requiere un valor">
+                        <f:selectItem itemLabel="Seleccionar..." itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{solicitudTutoriaForm.listaTutores}" var="t" itemValue="#{t[0]}" itemLabel="#{t[1]}" />     
+                        <p:ajax update="pgtutor  pgsoltutoria pgrtutor"  listener="#{solicitudTutoriaForm.mostrarRolTutor()}" />
+                    </p:selectOneMenu> 
+                    <p:message for="somtutor" display="icon"/>
+                </h:panelGrid>
+                <h:outputText  value="Rol Tesis*" style="font-weight: bold"  id="ortutor" rendered="#{solicitudTutoriaForm.btutor}"/>
+                <h:panelGrid columns="2" id="pgrtutor" rendered="#{solicitudTutoriaForm.btutor}">
+                    <p:selectOneMenu value="#{solicitudTutoriaForm.smrol.value}" disabled="#{solicitudTutoriaForm.beditar}"
+                                     id="somrtutor" style="width: 200px"
+                                     required="true" requiredMessage="Rol Tesis: se requiere un valor">
+                        <f:selectItem itemLabel="Seleccionar..." itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{solicitudTutoriaForm.listaRoles}" var="r" itemValue="#{r[0]}" itemLabel="#{r[1]}" />     
+                        <p:ajax update="pgrtutor" />
+                    </p:selectOneMenu> 
+                    <p:message for="somrtutor" display="icon"/>
+                </h:panelGrid>
+                <h:outputText  value="Lugar*" style="font-weight: bold"/>
+                <h:panelGrid columns="2" id="gdblugtuto">
+                    <p:selectOneMenu value="#{solicitudTutoriaForm.smmodalidad.value}" id="idblugtuto" style="width: 200px"
+                                     disabled="#{solicitudTutoriaForm.beditar}" required="true" requiredMessage="Lugar: se requiere un valor">
+                        <f:selectItem  itemLabel="Escoja uno.." itemValue="#{null}" />
+                        <f:selectItem  itemLabel="PRESENCIAL EN OFICINA" itemValue="P" />
+                        <f:selectItem  itemLabel="VIRTUAL MEDIANTE PLATAFORMAS COMO ZOOM, TEAMS, ETC" itemValue="V" />
+                        <f:selectItem  itemLabel="MEDIANTE CONSULTA (CORREO ELECTRÓNICO)" itemValue="C" />
+                        <p:ajax  update="gdblugtuto pgsoltutoria" listener="#{solicitudTutoriaForm.modalidadvalueChangeListener()}"/>
+                    </p:selectOneMenu> 
+                    <p:message for="idblugtuto" display="icon" />
+                </h:panelGrid> 
+                <p:outputLabel value="Edificio*" id="oedif" style="font-weight: bold" rendered="#{solicitudTutoriaForm.bpresencial}"/>
+                <h:panelGrid columns="2" id="gedif" rendered="#{solicitudTutoriaForm.bpresencial}">
+                    <p:selectOneMenu id="edif" value="#{solicitudTutoriaForm.smedifcio.value}" style="width: 200px" required="true"
+                                     disabled="#{solicitudTutoriaForm.beditar}" requiredMessage="Edidicio:se requiere un valor ">            
+                        <f:selectItem itemLabel="Seleccionar..." itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{solicitudTutoriaForm.listaEdificios}" var="edificio" itemValue="#{edificio.edifDesc}" itemLabel="#{edificio.edifDesc}" />     
+                        <p:ajax update="gedif"/>
+                    </p:selectOneMenu>   
+                    <p:message for="edif" display="icon" />
+                </h:panelGrid>
+                <!--p:outputLabel  value="Piso*" id="opiso" style="font-weight: bold" rendered="#{solicitudTutoriaForm.bpresencial}"/>
+                <h:panelGrid columns="2"  id="gpiso" rendered="#{solicitudTutoriaForm.bpresencial}" >
+                    <p:selectOneMenu id="piso" value="#{solicitudTutoriaForm.smpiso.value}" style="width: 200px" required="true"
+                                     disabled="#{solicitudTutoriaForm.beditar}" requiredMessage="Piso:se requiere un valor ">            
+                        <f:selectItem itemLabel="Seleccionar..." itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{solicitudTutoriaForm.listaPisos}" var="p" itemValue="#{p[1]}" itemLabel="#{p[1]}" />     
+                        <p:ajax update="pgsoltutoria gpiso" listener="#{solicitudTutoriaForm.instalcionByPiso()}"/>
+                    </p:selectOneMenu> 
+                    <p:message for="piso" display="icon" />
+                </h:panelGrid>
+                <p:outputLabel  value="Instalación*" id="oaula" style="font-weight: bold" rendered="#{solicitudTutoriaForm.bpresencial}"/>
+                <h:panelGrid columns="3" id="pnaula" rendered="#{solicitudTutoriaForm.bpresencial}">
+                    <p:selectOneMenu id="aula" value="#{solicitudTutoriaForm.sminstalacion.value}" style="width: 200px" required="true"
+                                     disabled="#{solicitudTutoriaForm.beditar}" requiredMessage="Instalación:se requiere un valor ">            
+                        <f:selectItem itemLabel="Seleccionar..." itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{solicitudTutoriaForm.listaInstalacion}" var="aula" itemValue="#{aula[1]}" itemLabel="#{aula[1]}" />     
+                        <p:ajax update="pnaula"/>
+                    </p:selectOneMenu>   
+                    <p:message for="aula" display="icon" />
+                </h:panelGrid-->   
+                <h:outputText  value="Link*" id="llink" style="font-weight: bold" rendered="#{solicitudTutoriaForm.bvirtual}"/>
+                <h:panelGrid columns="3" id="pglink" rendered="#{solicitudTutoriaForm.bvirtual}">
+                    <p:inputTextarea binding="#{solicitudTutoriaForm.itxtlink}" readonly="#{solicitudTutoriaForm.beditar}"
+                                     id="ilink" style=" width: 200px; height: 12px; text-transform: uppercase"
+                                     rows="15" cols="40" maxlength="1000" counter="countlink" counterTemplate="{0} Caracteres Restantes" autoResize="false"
+                                     required="true" requiredMessage="Link: se requiere un valor" >
+                        <p:ajax  update="pglink" immediate="true" /> 
+                    </p:inputTextarea>
+                    <p:message for="ilink" display="icon"/>
+                    <h:outputText id="countlink"/>
+                </h:panelGrid>
+                <h:outputText id="lcorreo" value="Correo*" style="font-weight: bold" rendered="#{solicitudTutoriaForm.bmensaje}"/>
+                <h:panelGrid columns="3" id="pgcorreo" rendered="#{solicitudTutoriaForm.bmensaje}">
+                    <p:inputTextarea binding="#{solicitudTutoriaForm.itxtcorreo}" readonly="#{solicitudTutoriaForm.beditar}"
+                                     id="icorreo" style=" width: 200px; height: 12px; text-transform: uppercase" validatorMessage="formato de correo incorrecto"
+                                     rows="15" cols="40" maxlength="200" counter="countcorreo" counterTemplate="{0} Caracteres Restantes" autoResize="false"
+                                     required="true" requiredMessage="Correo: se requiere un valor" >
+                        <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                        <p:ajax  update="pgcorreo :formLogin:growlLogin" immediate="true" /> 
+                    </p:inputTextarea>
+                    <p:message for="icorreo" display="icon"/>
+                    <h:outputText id="countcorreo"/>
+                </h:panelGrid>                
+                <h:outputText  value="Atención*" style="font-weight: bold"/>
+                <h:panelGrid columns="2" id="gdbtipgrupo">
+                    <p:selectOneMenu value="#{solicitudTutoriaForm.smtipogrupo.value}" disabled="#{solicitudTutoriaForm.beditar}"
+                                     id="somtipgrup" style="width: 200px"
+                                     required="true" requiredMessage="Modalidad: se requiere un valor">
+                        <f:selectItem  itemLabel="Escoja uno.." itemValue="#{null}" />
+                        <f:selectItem  itemLabel="INDIVIDUAL" itemValue="I" />
+                        <f:selectItem  itemLabel="GRUPAL" itemValue="G" />                                                                                                                           
+                        <p:ajax update="pgsoltutoria gdbtipgrupo outputLabelGrupE gdbcompas" listener="#{solicitudTutoriaForm.classmatesList()}"/>
+                    </p:selectOneMenu> 
+                    <p:message for="somtipgrup" display="icon" />
+                </h:panelGrid>
+                <p:outputLabel id="outputLabelGrupE" value="Listado de Compañeros*" style="font-weight: bold" rendered="#{solicitudTutoriaForm.verLabel}"/>
+                <h:panelGrid columns="2" id="gdbcompas" rendered="#{solicitudTutoriaForm.verPanelCompas}"> 
+                    <p:dataTable id="checkboxDT" var="group" value="#{solicitudTutoriaForm.listaEstudiantes}"
+                                 selection="#{solicitudTutoriaForm.selectedgrupo}" rowKey="#{group[0]}" 
+                                 style="margin-bottom:0" paginator="true" rows="5" paginatorPosition="top" >
+                        <p:column selectionMode="multiple" width="5%" style="text-align:center" />
+                        <p:column  headerText="Estudiantes" width="25%" style="text-align: center" >
+                            <h:outputText value="#{group[1]}" />          
+                        </p:column>
+                    </p:dataTable>               
+                </h:panelGrid>
+                <h:panelGrid columns="2" id="gdbcompas2" rendered="#{solicitudTutoriaForm.verPanel}"> 
+                    <p:dataTable id="tabgrup" var="group" value="#{solicitudTutoriaForm.listaTuto}"
+                                 rowKey="#{group[0]}" 
+                                 style="margin-bottom:0" paginator="true" rows="5" paginatorPosition="top" >
+                        <p:column  headerText="Estudiantes" width="25%" style="text-align: center" >
+                            <h:outputText value="#{group[1]}" />          
+                        </p:column>
+                    </p:dataTable>               
+                </h:panelGrid>
+                <h:outputText  value="Fecha *" style="font-weight: bold"/>
+                <h:panelGrid columns="2" id="pgfecsolicitud">
+                    <p:calendar id="fecsolicitud" value="#{solicitudTutoriaForm.fecSolicitud}" pattern="dd/MM/yyyy"  style="text-align: center" timeZone="America/Guayaquil" locale="es" size="25"
+                                readonlyInput="true" required="true" requiredMessage="Fecha: se requiere un valor" disabled="#{solicitudTutoriaForm.beditar}" mindate="#{solicitudTutoriaForm.fechaactual}">
+                        <p:ajax update="pgfecsolicitud" immediate="true" />
+                    </p:calendar>
+                    <p:message for="fecsolicitud" display="icon"/> 
+                </h:panelGrid>
+                <h:outputText  value="Hora *" style="font-weight: bold"/>
+                <h:panelGrid columns="2" id="pghorasolicitud">
+                    <pe:timePicker value="#{solicitudTutoriaForm.hora}"   mode="popup" widgetVar="inlineTimeWidget" startHours="#{solicitudTutoriaForm.horaIni}" endHours="#{solicitudTutoriaForm.horafinal}"  locale="es"  
+                                   startMinutes="00" endMinutes="59" intervalMinutes="15" disabled="#{solicitudTutoriaForm.beditar}"  
+                                   id="time"/>
+                    <p:message for="time" display="icon"/>
+                </h:panelGrid>                
+                <h:outputText  value="Duración *" style="font-weight: bold"/>
+                <h:panelGrid columns="2" id="pgduracion">
+                    <p:selectOneMenu value="#{solicitudTutoriaForm.smDuracion.value}" id="idbduracion" style="width: 200px" disabled="#{solicitudTutoriaForm.beditar}"
+                                     required="true" requiredMessage="Duración: se requiere un valor" >
+                        <f:selectItem  itemLabel="Escoja uno.." itemValue="" />
+                        <f:selectItem  itemLabel="15 min" itemValue="15" />
+                        <f:selectItem  itemLabel="30 min" itemValue="30" />
+                        <f:selectItem  itemLabel="45 min" itemValue="45" />   
+                        <f:selectItem  itemLabel="60 min" itemValue="60" />
+                        <f:selectItem  itemLabel="90 min" itemValue="90" />
+                        <f:selectItem  itemLabel="120 min" itemValue="120" />                        
+                        <p:ajax update="pgduracion "/>
+                    </p:selectOneMenu> 
+                    <p:message for="idbduracion" display="icon" />
+                </h:panelGrid>
+                <h:outputText  value="Observaciones/Link de archivo One Drive" style="font-weight: bold"/>
+                <h:panelGrid columns="2" id="gdbbaseindex">
+                    <p:inputTextarea binding="#{solicitudTutoriaForm.itxtobserv}" id="idbbaseindex"   readonly="#{solicitudTutoriaForm.beditar}"
+                                     autoResize="false" rows="2" cols="40" maxlength="1000" counter="countdetbase" counterTemplate="{0} Caracteres Restantes"
+                                     style="width: 200px" >
+                        <p:ajax update="gdbbaseindex" immediate="true" />
+                    </p:inputTextarea>
+                    <h:outputText id="countdetbase"/>
+                    <p:message for="idbbaseindex" display="icon" />
+                </h:panelGrid>
+            </h:panelGrid>
+        </h:panelGrid>
+    </h:panelGrid>
+    <p:commandButton  id="commandButtonGrabar" value="Guardar/Enviar" icon="ui-icon-disk" title="Guardar"                                
+                      update=":formLogin:growlLogin @form :formSolicitudTuto:dataSolicitud" rendered="#{solicitudTutoriaForm.guardar}" process="@parent"
+                      actionListener="#{solicitudTutoriaForm.guardarButton_processAction}" />  
+    <p:commandButton value="Aceptar Cambio" id="btnSolTutAceptar" update=":formLogin:growlLogin @form :formSolicitudTuto:dataSolicitud" 
+                     actionListener="#{solicitudTutoriaForm.aceptarButton_processAction(ae)}" 
+                     rendered="#{solicitudTutoriaForm.aceptar}" />
+    <p:commandButton value="Cambio no aceptado" id="btnSolTutRecahazar" 
+                     actionListener="#{solicitudTutoriaForm.rechazarButton_processAction(ae)}" update=":formLogin:growlLogin @form :formSolicitudTuto:dataSolicitud" 
+                     rendered="#{solicitudTutoriaForm.aceptar}"/>
+    <p:commandButton value="Anular" id="btnSolTutAnular"  update=":formLogin:growlLogin @form :formSolicitudTuto:dataSolicitud" 
+                     actionListener="#{solicitudTutoriaForm.negarButton_processAction(ae)}"
+                     rendered="#{solicitudTutoriaForm.anular}"/>
+    <p:commandButton value="Cancelar" oncomplete="mantTutWidget.hide()"  immediate="true" rendered="#{solicitudTutoriaForm.cancelar}">
+        <p:resetInput target=":formMantTut:pgsoltutoria" />  
+    </p:commandButton>   
+
+</ui:composition>

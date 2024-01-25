@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://java.sun.com/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://java.sun.com/jsf/core"
+                 xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <p:panel id="pnlContent" header="EVALUACION DE DOCENTES - ASIGNATURAS"  styleClass="myPanelHoja">
+        <h:form id="formEval">
+            <h:panelGrid columns="4" cellpadding="5" cellspacing="0">
+                <p:outputLabel id="outputLabelCiclo" value="Ciclo Acacémico:" style="font-weight: bold;color: blue" for="selectOneMenuCiclo"/>
+                <p:selectOneMenu id="selectOneMenuCiclo" value="#{asignaturaForm.anio}" style="width: 210px"  >  
+                    <f:selectItem itemValue="" itemLabel="Seleccione ..." noSelectionOption="true" />                        
+                    <f:selectItems value="#{asignaturaForm.ciclos}"  var="ciclo" itemValue="#{ciclo.matriculaPK.anio}"
+                                   itemLabel="#{ciclo.nombreAnio}" itemDescription="#{ciclo.nombreAnio}"/>
+                    <p:ajax update="dataEnc :pnlForm"   listener="#{asignaturaForm.recuperarListados()}" />                 
+                </p:selectOneMenu> 
+            </h:panelGrid>                        
+            <p:dataTable id="dataEnc" var="enc" value="#{asignaturaForm.asigEncuestaDataModel}" selection="#{asignaturaForm.objSelected}"
+                         emptyMessage="No existen evaluaciones abiertas de Asignaturas en el Ciclo Académico seleccionado !" selectionMode="single" styleClass="evalFormStyle"
+                         scrollable="true" scrollHeight="135" >
+                <p:ajax event="rowSelect" listener="#{asignaturaForm.onRowSelect}" update=":pnlForm" />
+                <p:ajax event="rowUnselect" listener="#{asignaturaForm.onRowUnselect}" update=":pnlForm" />   
+                <p:column headerText="Ord." style="text-align: center"  width="2%">   
+                    #{asignaturaForm.asigEncuestaDataModel.rowIndex+1}
+                </p:column>                          
+                <p:column headerText="Trimestre" style="text-align: center"  width="10%">       
+                    #{enc.nombreNivel}
+                </p:column>                  
+                <p:column headerText="Profesor" width="22%">   
+                    #{enc.nombres} 
+                </p:column>  
+                <p:column headerText="Asignatura"  width="38%" style="text-transform: uppercase">     
+                    #{enc.nombreMateria}
+                </p:column>  
+                <p:column headerText="Fecha Cierre" style="text-align: center" width="13%">      
+                    <h:outputText value="#{enc.fechaFin}" style="color:#{enc.estado==1 ?'limegreen':enc.habilitado=='S'?'blue':'red'}">
+                        <f:convertDateTime locale="es" dateStyle="long"/>
+                    </h:outputText>  
+                </p:column>                 
+                <p:column headerText="Estado - Evaluación"  style="text-align: center;font-weight: bold" width="15%">
+                    <h:outputText value="#{enc.habilitado=='S' and enc.estado==0 ?'Por Realizar':enc.habilitado=='S' and enc.estado==1?'Realizada':enc.habilitado=='N' and enc.estado==1?'Período Cerrado - Realizada':'Período Cerrado - No Realizada'}"
+                                  style="color:#{enc.estado==1 ?'limegreen':enc.habilitado=='S'?'blue':'red'}"/>  
+                </p:column>    
+            </p:dataTable>
+        </h:form>    
+        <p:panel id="pnlForm" header="Formulario de evaluación" widgetVar="carDialog">
+            <h:form id="formCenter" style="text-align: center" >
+                <p:outputLabel style="color:red;font-size: 10pt;text-decoration: blink;text-transform: capitalize" escape="false"
+                               value="#{asignaturaForm.objSelected eq null?'Seleccione una Asignatura....':
+                                        asignaturaForm.objSelected.estado eq 1?
+                                        'Evaluación de: '.concat('&lt;br/&gt;').concat('&lt;br/&gt;').concat(asignaturaForm.objSelected.nombreMateria).concat('&lt;br/&gt;').concat('&lt;br/&gt;').
+                                        concat(' con el docente ').concat(asignaturaForm.objSelected.nombres).concat('&lt;br/&gt;').concat('&lt;br/&gt;').concat(' ya realizada !'):
+                                        asignaturaForm.objSelected.habilitado=='N'?'Evaluación de: '.concat('&lt;br/&gt;').concat('&lt;br/&gt;').concat(asignaturaForm.objSelected.nombreMateria).concat('&lt;br/&gt;').concat('&lt;br/&gt;').
+                                        concat(' con el docente ').concat(asignaturaForm.objSelected.nombres).concat('&lt;br/&gt;').concat('&lt;br/&gt;').concat(' No realizada - Evaluación Cerrada'):''}"/>
+                <h:panelGroup id="panelGroupCenter" rendered="#{asignaturaForm.objSelected ne null}">
+                    <ui:include src="#{navigationMgmtBean.openPage}.xhtml">
+                        <ui:param name="beanForm" value="#{asignaturaForm}"/>
+                    </ui:include>
+                </h:panelGroup>
+            </h:form>        
+        </p:panel>        
+    </p:panel>
+
+
+</ui:composition>
+

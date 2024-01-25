@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <h:form id="formMenu">  
+        <style>
+            .ui-accordion .ui-accordion-content{
+                padding: 1em 0em;
+                margin-left: 10px;
+            }
+            .cuaderno , .ui-accordion-content{
+                padding: 1em 0em;
+                margin-left: -10px;
+            }
+        </style>
+        <p:accordionPanel id="accordionPaneMenu">
+            <p:tab title="Evaluaciones y seguimiento">
+                <p:panelGrid id="pnlMenu" columns="1" styleClass="ui-panelGridNav">
+                    <p:commandLink actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+                                   value="Asignaturas - docentes" oncomplete="window.location.reload();">  
+                        <f:param name="includePath" value="/pages/evalAsignatura"/>  
+                    </p:commandLink>
+                    <p:commandLink actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+                                   value="Programas" oncomplete="window.location.reload();"> 
+                        <f:param name="includePath" value="/pages/evalPrograma"/>
+                    </p:commandLink>
+                    <p:commandLink actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+                                   value="Proceso de Titulación" oncomplete="window.location.reload();"> 
+                        <f:param name="includePath" value="/pages/evalTutoria"/>
+                    </p:commandLink> 
+                    <p:commandLink actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+                                   value="Calidad de servicios" oncomplete="window.location.reload();"> 
+                        <f:param name="includePath" value="/pages/evalCalidadServicio"/>
+                    </p:commandLink> 
+                    <p:commandLink actionListener="#{navigationMgmtBean.navigationPathChange}" immediate="true" update=":pnlContent" 
+                                   value="Tutorías académicas/técnicas" oncomplete="window.location.reload();"> 
+                        <f:param name="includePath" value="/pages/tutoria/evalTutoriaAcademica"/>
+                    </p:commandLink> 
+
+<!--p:commandLink actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+value="Encuesta Socio-Económica" > 
+<f:param name="includePath" value="/pages/encuSocioEco"/>
+</p:commandLink-->                       
+                </p:panelGrid>
+            </p:tab> 
+            <p:tab title="Participación ceremonia">
+                <p:commandLink actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+                               value="Participación ceremonia graduados" oncomplete="window.location.reload();"> 
+                    <f:param name="includePath" value="/pages/participacionCeremoniaGraduados"/>
+                </p:commandLink> 
+            </p:tab>
+            <p:tab title="Sílabo">
+                <p:commandLink actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+                               value="Ver sílabo" >  
+                    <f:param name="includePath" value="/pages/syllabus"/>
+                </p:commandLink>                
+            </p:tab>
+            <p:tab title="Registros académicos">
+                <p:commandLink actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+                               value="Ver Notas" >  
+                    <f:param name="includePath" value="/pages/notas"/>
+                </p:commandLink>                
+            </p:tab>              
+            <p:tab id="tabTramites" title="Trámites">
+                <p:panelGrid  id="pnlTramites" columns="1" styleClass="ui-panelGridNav" >
+                    <p:commandLink id="commandLinkTramites" actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+                                   value="Certificados" >  
+                        <f:param name="includePath" value="/pages/certificado"/>
+                    </p:commandLink><br/>
+                </p:panelGrid>
+            </p:tab>
+            <p:tab title="Normativa/instructivos">
+                <h:outputLink value="#" onclick="return open_win('https://www.uasb.edu.ec/nosotros/guias-academicas', 'v8');">
+                    <ul><li>Guías académicas, Normativas e Instructivos</li></ul>
+                </h:outputLink>                 
+                <p:commandLink value="Trámites" onclick="return open_win('https://sistemas.uasb.edu.ec/PortalE_OCU/docs/TRAMITES_SECRETARIA_GENERAL.pdf', 'v1');"/>                
+                <!--h:outputLink value="#" onclick="return open_win('https://www.uasb.edu.ec/documents/10181/3032588/Resoluci%C3%B3n+CCA+emergencia+Covid+19/ca0c560b-3fd5-4485-8946-7b626c0f0e40/document.pdf', 'v8');">
+                    <ul><li>Resoluciónn COVID19</li></ul>
+                </h:outputLink> 
+                <h:outputLink value="#" onclick="return open_win('http://portal.uasb.edu.ec/UserFiles/372/File/pdfs/INFORMACIONBASICA/REGLAMENTO%20GENERAL%20ACADEMICO.pdf', 'v1');">
+                    <ul><li>Reglamento general académico</li></ul>
+                </h:outputLink>
+                <h:outputLink id="uno" value="#" onclick="return open_win('http://portal.uasb.edu.ec/UserFiles/File/pdfs/INFORMACIONBASICA/reglamentofuncionamiento.pdf', 'v2');">
+                    <ul><li>Reglamento general de funcionamiento</li></ul>
+                </h:outputLink>
+                <h:outputLink value="#" onclick="return open_win('https://www.uasb.edu.ec/documents/1908963/2082832/NORMAS+DE+FUNCIONAMIENTO+DE+LOS+PROGRAMAS+DE+POSGRADO', 'v3');">
+                    <ul><li>Normas de funcionamiento de programas de posgrado</li></ul>
+                </h:outputLink>         
+                <h:outputLink value="#" onclick="return open_win('https://www.uasb.edu.ec/documents/1908963/2082832/PAUTAS+PARA+LA+ELABORACION+DE+TESIS+DE+MAESTRIA', 'v4');">
+                    <ul><li>Pautas para elaboración y presentación de tesis de maestría</li></ul>
+                </h:outputLink>        
+                <h:outputLink value="#" onclick="return open_win('http://portal.uasb.edu.ec/UserFiles/372/File/pdfs/NORMAS/Normas%20para%20presentacion%20de%20trabajos%20de%20graduacion%20en%20especializacion%20superior%20(2014-2015).pdf', 'v5');">
+                    <ul><li>Pautas para elaboración y presentación de monografía final</li></ul>
+                </h:outputLink>
+                <h:outputLink value="#" onclick="return open_win('http://portal.uasb.edu.ec/UserFiles/372/File/pdfs/INFORMACIONBASICA/normas%20infraccion%20a%20la%20honestidad%20intelectual%2015%20septiembre%202008.pdf', 'v6');">
+                    <ul><li>Normas para el tratamiento de infracciones contra la honestidad intelectual</li></ul>
+                </h:outputLink>    
+                <h:outputLink value="#" onclick="return open_win('http://www.uasb.edu.ec/documents/10181/1488423/Manual+de+estilo+%285ta+edici%C3%B3n%29/f3ae1224-0524-4f5f-a66d-90c37767a745', 'v8');">
+                    <ul><li>Manual de estilo</li></ul>
+                </h:outputLink>  
+                <h:outputLink value="#" onclick="return open_win('https://www.uasb.edu.ec/documents/10181/2375711/NORMAS-PARA-LA-TITULACION-EN-MAESTRIA-PROFESIONAL', 'v8');">
+                    <ul><li>Normas para titulación de Maestrías Profesionales </li></ul>
+                </h:outputLink-->                  
+            </p:tab>  
+            <p:tab title="Resumen de programas">
+                <p:tab title="Detalle  Asignatura">
+                    <p:commandLink actionListener="#{navigationMgmtBean.navigationPathChange}" immediate="true" update=":pnlContent" 
+                                   value="Resumen de programas" >  
+                        <f:param name="includePath" value="/pages/resumenPrograma"/>
+                    </p:commandLink>                
+                </p:tab>
+            </p:tab>   
+            <p:tab title="Mis Tutorias" >
+                <p:panelGrid id="pnlMenuTutoria" columns="1" styleClass="ui-panelGridNav">
+                    <p:commandLink actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+                                   value="Solicitar Tutoría" oncomplete="window.location.reload();">  
+                        <f:param name="includePath" value="/pages/tutoria/solicitudTutoria"/>  
+                    </p:commandLink>
+                    <p:commandLink actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+                                   value="Reportes" oncomplete="window.location.reload();"> 
+                        <f:param name="includePath" value="/pages/tutoria/reporteTutoria"/>
+                    </p:commandLink>                                        
+                </p:panelGrid>
+            </p:tab>  
+            <p:tab title="Reportes">
+                <p:panelGrid id="pnlMenuReportes" columns="1" styleClass="ui-panelGridNav">
+                    <p:commandLink actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+                                   value="Evaluaciones consolidados" >  
+                        <f:param name="includePath" value="/pages/evaluacion/reportes/consolidados"/>
+                    </p:commandLink> 
+                </p:panelGrid>
+            </p:tab>
+            <!--p:tab title="Andina diversa y humana">
+                <h:panelGrid columns="1" cellpadding="0" cellspacing="0" style=" margin-left: -30px;" >
+                    <h:outputLink value="#" onclick="return open_win('https://sistemas.uasb.edu.ec/PortalE_OCU/docs/Presentación Andina Diversa y Humana.pdf', 'v1');">
+                        <ul><li>Presentación Andina Diversa y Humana</li></ul>
+                    </h:outputLink>
+                    <h:outputLink value="#" onclick="return open_win('https://sistemas.uasb.edu.ec/PortalE_OCU/docs/Resumen ejecutivo (14.3.2017).pdf', 'v1');">
+                        <ul><li>Resumen ejecutivo</li></ul>
+                    </h:outputLink>
+                    <h:outputLink value="#" onclick="return open_win('https://sistemas.uasb.edu.ec/PortalE_OCU/docs/Anexo 21. Presentación final del informe.pdf', 'v1');">
+                        <ul><li>Presentación final del informe</li></ul>
+                    </h:outputLink>                                                                    
+                    <h:outputLink value="#" onclick="return open_win('https://sistemas.uasb.edu.ec/PortalE_OCU/docs/Informe diagnóstico (14.03.2017).pdf', 'v1');">
+                        <ul><li>Informe diagnóstico</li></ul>
+                    </h:outputLink>          
+                </h:panelGrid>
+            </p:tab-->
+        </p:accordionPanel>
+        <!--p:panelMenu style="width:auto"  >  
+            <p:submenu label="Evaluaciones" >  
+                <p:menuitem value="Asignaturas" actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" >
+                    <f:param name="includePath" value="/pages/evalAsignatura"/> 
+                </p:menuitem>
+                <p:menuitem value="Programas" actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" >
+                    <f:param name="includePath" value="/pages/evalPrograma"/>
+                </p:menuitem>
+                <p:menuitem value="Tutorías" actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" >
+                    <f:param name="includePath" value="/pages/evalTutoria"/>
+                </p:menuitem>                 
+            </p:submenu>  
+            <p:submenu label="Syllabus">  
+                <p:menuitem value="Ver Syllabus" actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" >
+                    <f:param name="includePath" value="/pages/syllabus"/>
+                </p:menuitem>                                     
+            </p:submenu>  
+            <p:separator />  
+
+        </p:panelMenu4-->          
+
+        <!--p:panelGrid id="pnlMenu" columns="1" styleClass="ui-panelGridNav">
+            <p:commandLink id="opc1" actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+                           value="Evaluación Asignaturas" oncomplete="window.location.reload();">  
+                <f:param name="includePath" value="/pages/evalAsignatura"/>                
+            </p:commandLink>
+            <p:commandLink id="opc2" actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+                           value="Seguimiento Programas" oncomplete="window.location.reload();"> 
+                <f:param name="includePath" value="/pages/evalPrograma"/>
+            </p:commandLink> 
+            <p:commandLink id="opc3" actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+                           value="Evaluación Tutorías" oncomplete="window.location.reload();"> 
+                <f:param name="includePath" value="/pages/evalTutoria"/>
+            </p:commandLink> 
+            <p:commandLink id="opc4" actionListener="#{navigationMgmtBean.navigationPathChange(ae)}" immediate="true" update=":pnlContent" 
+                           value="Syllabus" > 
+                <f:param name="includePath" value="/pages/syllabus"/>                
+            </p:commandLink>      
+        </p:panelGrid-->       
+    </h:form>        
+
+
+
+</ui:composition>
+

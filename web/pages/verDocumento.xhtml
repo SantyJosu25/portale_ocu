@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://java.sun.com/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://java.sun.com/jsf/core" xmlns:pe="http://primefaces.org/ui/extensions" >
+
+    <style>
+        .panelMant .ui-panel-content{padding: 0px 0px;}
+        .commandButtonAdd{height: 20px;padding: 0px 5px}
+        .commandButtonAdd .ui-button-text {line-height: 0.8;font-size: 9px;}
+    </style>
+    <p:panel id="panelMant"  style="border:none;background-color: transparent;height: 500px" styleClass="panelMant">
+        <p:media id="visorPdf" width="1200" height="500"  player="pdf" value="/printPDFPreview"> 
+            <f:param name="#zoom" value="75"/>  
+            <div align="center" style="padding-top: 100px;">
+                <h:outputLabel value="Su explorador no soporta desplegar archivos en PDF" style="font-size: 14pt;"/><br/>
+                <h:outputLink style="color:blue;font-size: 14px;" value="/printPDFPreview">Click Aqui</h:outputLink><br/>
+                <h:outputLabel value="para Descargar el archivo." style="font-size: 12px;"/>  
+            </div>
+        </p:media>  
+    </p:panel>
+    <h:panelGroup id="pnlBotones" >
+        <div align="right" style="margin-top: 1px;">
+            <p:commandButton  id="commandButtonCancelar" value="Cerrar" icon="ui-icon-cancel" title="Cerrar" styleClass="commandButtonAdd" 
+                               onclick="mantWidget.hide();" process="@this" actionListener="#{verSyllabus.resetVariableReporte()}" />
+        </div>
+    </h:panelGroup>
+</ui:composition>
+

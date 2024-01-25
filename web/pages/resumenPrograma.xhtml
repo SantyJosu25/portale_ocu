@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://java.sun.com/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://java.sun.com/jsf/core">
+    <p:panel id="pnlContent" header="#{resumenPrograma.navJSFManagedBean.nombreOpcion}" styleClass="myPanelHoja">
+        <style>
+            .ui-state-default .ui-icon-refrescar {background-image: url("#{resource['/images/refresh.png'] }");background-size: 18px 18px;}
+        </style>
+        <h:form id="verResumen">
+            <h:panelGrid id="pnlAnio" columns="5" cellpadding="5" cellspacing="0">
+                <p:outputLabel id="outputLabelCiclo" value="Ciclo Académico:" style="font-weight: bold;color: blue" for="selectOneMenuAnio"/>
+                <p:selectOneMenu id="selectOneMenuAnio" value="#{resumenPrograma.periodo}" style="width: 210px" 
+                                 requiredMessage="Seleccione un Ciclo Académico" required="true">  
+                    <f:selectItem itemValue="" itemLabel="Seleccione ..." noSelectionOption="true" />                        
+                    <f:selectItems value="#{resumenPrograma.aniosAcademico}" var="anioAcademico" itemValue="#{anioAcademico.cicloAcademicoPK.anio}"
+                                   itemLabel="#{anioAcademico.nombreCiclo}" itemDescription="#{anioAcademico.nombreCiclo}"/>
+                    <p:ajax update="dataResumen"   listener="#{resumenPrograma.evtSeleccionarAnioAcademico}" />      
+                </p:selectOneMenu> 
+                <p:commandButton icon="ui-icon-refrescar" title="Refrescar registros" immediate="true"  update="dataResumen" 
+                                 actionListener="#{resumenPrograma.evtSeleccionarAnioAcademico}"/>   
+            </h:panelGrid>
+            <p:dataTable 
+                id = "dataResumen" 
+                var="resumen"
+                value="#{resumenPrograma.listResumenProgramas}" 
+                paginator="true" rows="5" 
+                paginatorPosition="top"
+                resizableColumns="true" 
+                style=" font-family: Arial; font-size: 6pt;width: 100%"
+                emptyMessage="No existen datos Registrados">  
+
+                
+                <p:column headerText="Ciclo Académico"  style="width:5%; text-align: center">
+                    <h:outputText value="#{resumen[1]}" />                                            
+                </p:column>
+               
+                <p:column headerText="Código Programa" style="width:5%; text-align: center">
+                    <h:outputText value="#{resumen[2]}" />                                            
+                </p:column>
+                   
+                <p:column headerText="Programa" style="width: 10%;text-align: center">
+                    <h:outputText value="#{resumen[4]}" />                                            
+                </p:column>
+                <p:column headerText="Link" style="width:15%; text-align: center">
+                    <h:outputLink value="#" onclick="return open_win('#{resumen[3]}', 'v1');" rendered="#{resumen[3] ne 'null'}">
+                        <ul><li>#{resumen[3]}</li></ul>
+                        <h:outputText value="NO EXISTE LINK" rendered="#{resumen[3] eq 'null'}"/> 
+                    </h:outputLink>  
+                  </p:column>
+
+            </p:dataTable>
+        </h:form> 
+
+
+
+
+    </p:panel>                     
+
+
+</ui:composition>
+
